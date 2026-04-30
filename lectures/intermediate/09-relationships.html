@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المحاضرة 9: العلاقات بين الجداول</title>
+    <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>المحاضرة 9: العلاقات بين الجداول (Relationships)</h1>
+            <p class="instructor">مقدم الدورة: م. ياسر المفعلاني</p>
+        </div>
+    </header>
+
+    <nav class="main-nav">
+        <div class="container">
+            <ul>
+                <li><a href="../../index.html">الصفحة الرئيسية</a></li>
+                <li><a href="#content">المحتوى</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="lecture-content" id="content">
+            <h2>ما هي العلاقات؟</h2>
+            <p>العلاقات تربط الجداول ببعضها البعض لضمان سلامة البيانات وإنشاء قاعدة بيانات منظمة.</p>
+
+            <h2>المفتاح الأساسي (Primary Key)</h2>
+            <p>المفتاح الأساسي هو عمود أو مجموعة أعمدة تحدد بشكل فريد كل سجل في الجدول.</p>
+
+            <h3>إنشاء Primary Key</h3>
+            <div class="code-block">
+<code><span class="keyword">CREATE TABLE</span> الطلاب
+(
+    رقم_الطالب <span class="keyword">INT</span> <span class="keyword">PRIMARY KEY</span>,
+    الاسم <span class="keyword">NVARCHAR</span>(50) <span class="keyword">NOT NULL</span>,
+    العمر <span class="keyword">INT</span>
+);
+
+<span class="comment">-- أو بطريقة أخرى</span>
+<span class="keyword">CREATE TABLE</span> الطلاب
+(
+    رقم_الطالب <span class="keyword">INT</span>,
+    الاسم <span class="keyword">NVARCHAR</span>(50) <span class="keyword">NOT NULL</span>,
+    العمر <span class="keyword">INT</span>,
+    <span class="keyword">CONSTRAINT</span> PK_Students <span class="keyword">PRIMARY KEY</span> (رقم_الطالب)
+);
+</code>
+            </div>
+
+            <h3>Primary Key المركب</h3>
+            <div class="code-block">
+<code><span class="keyword">CREATE TABLE</span> التسجيلات
+(
+    رقم_الطالب <span class="keyword">INT</span>,
+    رقم_المادة <span class="keyword">INT</span>,
+    الدرجة <span class="keyword">DECIMAL</span>(5,2),
+    <span class="keyword">PRIMARY KEY</span> (رقم_الطالب, رقم_المادة)
+);
+</code>
+            </div>
+
+            <h2>المفتاح الخارجي (Foreign Key)</h2>
+            <p>المفتاح الخارجي يربط جدول بجدول آخر ويضمن سلامة البيانات المرجعية.</p>
+
+            <h3>إنشاء Foreign Key</h3>
+            <div class="code-block">
+<code><span class="comment">-- جدول الطلاب (الجدول الرئيسي)</span>
+<span class="keyword">CREATE TABLE</span> الطلاب
+(
+    رقم_الطالب <span class="keyword">INT</span> <span class="keyword">PRIMARY KEY</span>,
+    الاسم <span class="keyword">NVARCHAR</span>(50) <span class="keyword">NOT NULL</span>
+);
+
+<span class="comment">-- جدول التسجيلات (الجدول المرتبط)</span>
+<span class="keyword">CREATE TABLE</span> التسجيلات
+(
+    رقم_التسجيل <span class="keyword">INT</span> <span class="keyword">PRIMARY KEY</span>,
+    رقم_الطالب <span class="keyword">INT</span>,
+    رقم_المادة <span class="keyword">INT</span>,
+    الدرجة <span class="keyword">DECIMAL</span>(5,2),
+    <span class="keyword">FOREIGN KEY</span> (رقم_الطالب) <span class="keyword">REFERENCES</span> الطلاب(رقم_الطالب)
+);
+</code>
+            </div>
+
+            <h3>إضافة Foreign Key لجدول موجود</h3>
+            <div class="code-block">
+<code><span class="keyword">ALTER TABLE</span> التسجيلات
+<span class="keyword">ADD CONSTRAINT</span> FK_Student
+<span class="keyword">FOREIGN KEY</span> (رقم_الطالب)
+<span class="keyword">REFERENCES</span> الطلاب(رقم_الطالب);
+</code>
+            </div>
+
+            <h2>أنواع العلاقات</h2>
+
+            <h3>1. علاقة واحد إلى واحد (One-to-One)</h3>
+            <p>كل سجل في الجدول الأول يرتبط بسجل واحد فقط في الجدول الثاني.</p>
+            <div class="code-block">
+<code><span class="keyword">CREATE TABLE</span> الطلاب
+(
+    رقم_الطالب <span class="keyword">INT</span> <span class="keyword">PRIMARY KEY</span>,
+    الاسم <span class="keyword">NVARCHAR</span>(50)
+);
+
+<span class="keyword">CREATE TABLE</span> بيانات_الشخصية
+(
+    رقم_الطالب <span class="keyword">INT</span> <span class="keyword">PRIMARY KEY</span>,
+    العنوان <span class="keyword">NVARCHAR</span>(200),
+    الهاتف <span class="keyword">NVARCHAR</span>(20),
+    <span class="keyword">FOREIGN KEY</span> (رقم_الطالب) <span class="keyword">REFERENCES</span> الطلاب(رقم_الطالب)
+);
+</code>
+            </div>
+
+            <h3>2. علاقة واحد إلى كثير (One-to-Many)</h3>
+            <p>سجل واحد في الجدول الأول يمكن أن يرتبط بعدة سجلات في الجدول الثاني.</p>
+            <div class="code-block">
+<code><span class="keyword">CREATE TABLE</span> الطلاب
+(
+    رقم_الطالب <span class="keyword">INT</span> <span class="keyword">PRIMARY KEY</span>,
+    الاسم <span class="keyword">NVARCHAR</span>(50)
+);
+
+<span class="keyword">CREATE TABLE</span> التسجيلات
+(
+    رقم_التسجيل <span class="keyword">INT</span> <span class="keyword">PRIMARY KEY</span>,
+    رقم_الطالب <span class="keyword">INT</span>,
+    رقم_المادة <span class="keyword">INT</span>,
+    <span class="keyword">FOREIGN KEY</span> (رقم_الطالب) <span class="keyword">REFERENCES</span> الطلاب(رقم_الطالب)
+);
+<span class="comment">-- طالب واحد يمكن أن يكون له عدة تسجيلات</span>
+</code>
+            </div>
+
+            <h3>3. علاقة كثير إلى كثير (Many-to-Many)</h3>
+            <p>تتطلب جدول وسيط (Junction Table).</p>
+            <div class="code-block">
+<code><span class="keyword">CREATE TABLE</span> الطلاب
+(
+    رقم_الطالب <span class="keyword">INT</span> <span class="keyword">PRIMARY KEY</span>,
+    الاسم <span class="keyword">NVARCHAR</span>(50)
+);
+
+<span class="keyword">CREATE TABLE</span> المواد
+(
+    رقم_المادة <span class="keyword">INT</span> <span class="keyword">PRIMARY KEY</span>,
+    اسم_المادة <span class="keyword">NVARCHAR</span>(50)
+);
+
+<span class="comment">-- جدول وسيط</span>
+<span class="keyword">CREATE TABLE</span> تسجيل_المواد
+(
+    رقم_الطالب <span class="keyword">INT</span>,
+    رقم_المادة <span class="keyword">INT</span>,
+    <span class="keyword">PRIMARY KEY</span> (رقم_الطالب, رقم_المادة),
+    <span class="keyword">FOREIGN KEY</span> (رقم_الطالب) <span class="keyword">REFERENCES</span> الطلاب(رقم_الطالب),
+    <span class="keyword">FOREIGN KEY</span> (رقم_المادة) <span class="keyword">REFERENCES</span> المواد(رقم_المادة)
+);
+</code>
+            </div>
+
+            <h2>CASCADE Actions</h2>
+            <p>تحدد ما يحدث عند تحديث أو حذف السجل الرئيسي.</p>
+
+            <h3>CASCADE DELETE</h3>
+            <div class="code-block">
+<code><span class="keyword">ALTER TABLE</span> التسجيلات
+<span class="keyword">ADD CONSTRAINT</span> FK_Student
+<span class="keyword">FOREIGN KEY</span> (رقم_الطالب)
+<span class="keyword">REFERENCES</span> الطلاب(رقم_الطالب)
+<span class="keyword">ON DELETE CASCADE</span>;
+<span class="comment">-- عند حذف طالب، سيتم حذف تسجيلاته تلقائياً</span>
+</code>
+            </div>
+
+            <h3>CASCADE UPDATE</h3>
+            <div class="code-block">
+<code><span class="keyword">ALTER TABLE</span> التسجيلات
+<span class="keyword">ADD CONSTRAINT</span> FK_Student
+<span class="keyword">FOREIGN KEY</span> (رقم_الطالب)
+<span class="keyword">REFERENCES</span> الطلاب(رقم_الطالب)
+<span class="keyword">ON UPDATE CASCADE</span>;
+<span class="comment">-- عند تحديث رقم_الطالب، سيتم تحديثه في التسجيلات تلقائياً</span>
+</code>
+            </div>
+
+            <h3>NO ACTION (الافتراضي)</h3>
+            <div class="code-block">
+<code><span class="keyword">ALTER TABLE</span> التسجيلات
+<span class="keyword">ADD CONSTRAINT</span> FK_Student
+<span class="keyword">FOREIGN KEY</span> (رقم_الطالب)
+<span class="keyword">REFERENCES</span> الطلاب(رقم_الطالب)
+<span class="keyword">ON DELETE NO ACTION</span>
+<span class="keyword">ON UPDATE NO ACTION</span>;
+<span class="comment">-- لا يمكن حذف أو تحديث السجل الرئيسي إذا كان مرتبطاً</span>
+</code>
+            </div>
+
+            <h3>SET NULL</h3>
+            <div class="code-block">
+<code><span class="keyword">ALTER TABLE</span> التسجيلات
+<span class="keyword">ADD CONSTRAINT</span> FK_Student
+<span class="keyword">FOREIGN KEY</span> (رقم_الطالب)
+<span class="keyword">REFERENCES</span> الطلاب(رقم_الطالب)
+<span class="keyword">ON DELETE SET NULL</span>;
+<span class="comment">-- عند حذف الطالب، سيتم تعيين رقم_الطالب إلى NULL</span>
+</code>
+            </div>
+
+            <h2>عرض العلاقات</h2>
+            <div class="code-block">
+<code><span class="comment">-- عرض جميع Foreign Keys</span>
+<span class="keyword">SELECT</span>
+    fk.name <span class="keyword">AS</span> ForeignKeyName,
+    OBJECT_NAME(fk.parent_object_id) <span class="keyword">AS</span> TableName,
+    COL_NAME(fc.parent_object_id, fc.parent_column_id) <span class="keyword">AS</span> ColumnName,
+    OBJECT_NAME(fk.referenced_object_id) <span class="keyword">AS</span> ReferencedTableName,
+    COL_NAME(fc.referenced_object_id, fc.referenced_column_id) <span class="keyword">AS</span> ReferencedColumnName
+<span class="keyword">FROM</span> sys.foreign_keys <span class="keyword">AS</span> fk
+<span class="keyword">INNER JOIN</span> sys.foreign_key_columns <span class="keyword">AS</span> fc
+    <span class="keyword">ON</span> fk.object_id = fc.constraint_object_id;
+</code>
+            </div>
+
+            <h2>حذف Foreign Key</h2>
+            <div class="code-block">
+<code><span class="keyword">ALTER TABLE</span> التسجيلات
+<span class="keyword">DROP CONSTRAINT</span> FK_Student;
+</code>
+            </div>
+
+            <h2>مثال شامل</h2>
+            <div class="code-block">
+<code><span class="comment">-- إنشاء قاعدة بيانات للجامعة</span>
+<span class="keyword">CREATE DATABASE</span> الجامعة;
+<span class="keyword">USE</span> الجامعة;
+
+<span class="comment">-- جدول الكليات</span>
+<span class="keyword">CREATE TABLE</span> الكليات
+(
+    رقم_الكلية <span class="keyword">INT</span> <span class="keyword">PRIMARY KEY</span> <span class="keyword">IDENTITY</span>(1,1),
+    اسم_الكلية <span class="keyword">NVARCHAR</span>(100) <span class="keyword">NOT NULL</span>
+);
+
+<span class="comment">-- جدول الطلاب</span>
+<span class="keyword">CREATE TABLE</span> الطلاب
+(
+    رقم_الطالب <span class="keyword">INT</span> <span class="keyword">PRIMARY KEY</span> <span class="keyword">IDENTITY</span>(1,1),
+    الاسم <span class="keyword">NVARCHAR</span>(50) <span class="keyword">NOT NULL</span>,
+    رقم_الكلية <span class="keyword">INT</span>,
+    <span class="keyword">FOREIGN KEY</span> (رقم_الكلية) <span class="keyword">REFERENCES</span> الكليات(رقم_الكلية)
+);
+
+<span class="comment">-- جدول المواد</span>
+<span class="keyword">CREATE TABLE</span> المواد
+(
+    رقم_المادة <span class="keyword">INT</span> <span class="keyword">PRIMARY KEY</span> <span class="keyword">IDENTITY</span>(1,1),
+    اسم_المادة <span class="keyword">NVARCHAR</span>(100) <span class="keyword">NOT NULL</span>
+);
+
+<span class="comment">-- جدول التسجيلات (Many-to-Many)</span>
+<span class="keyword">CREATE TABLE</span> التسجيلات
+(
+    رقم_الطالب <span class="keyword">INT</span>,
+    رقم_المادة <span class="keyword">INT</span>,
+    الدرجة <span class="keyword">DECIMAL</span>(5,2),
+    <span class="keyword">PRIMARY KEY</span> (رقم_الطالب, رقم_المادة),
+    <span class="keyword">FOREIGN KEY</span> (رقم_الطالب) <span class="keyword">REFERENCES</span> الطلاب(رقم_الطالب) <span class="keyword">ON DELETE CASCADE</span>,
+    <span class="keyword">FOREIGN KEY</span> (رقم_المادة) <span class="keyword">REFERENCES</span> المواد(رقم_المادة) <span class="keyword">ON DELETE CASCADE</span>
+);
+</code>
+            </div>
+
+            <h2>أفضل الممارسات</h2>
+            <ul>
+                <li>استخدم Primary Key لكل جدول</li>
+                <li>استخدم Foreign Keys لضمان سلامة البيانات</li>
+                <li>خطط للعلاقات قبل إنشاء الجداول</li>
+                <li>استخدم CASCADE بحذر</li>
+                <li>استخدم أسماء واضحة للقيود (Constraints)</li>
+                <li>تأكد من وجود Indexes على Foreign Keys</li>
+            </ul>
+
+            <div class="tip">
+                <strong>نصيحة:</strong> إنشاء Index على Foreign Key يحسن أداء JOIN operations.
+            </div>
+
+            <h2>الخلاصة</h2>
+            <ul>
+                <li>Primary Key يحدد السجلات بشكل فريد</li>
+                <li>Foreign Key يربط الجداول ببعضها</li>
+                <li>هناك ثلاثة أنواع من العلاقات: One-to-One, One-to-Many, Many-to-Many</li>
+                <li>CASCADE Actions تحدد سلوك التحديث والحذف</li>
+                <li>العلاقات تضمن سلامة البيانات</li>
+            </ul>
+
+            <div class="navigation">
+                <a href="../beginner/08-delete.html" class="nav-btn">المحاضرة السابقة</a>
+                <a href="../../index.html" class="nav-btn">العودة للصفحة الرئيسية</a>
+                <a href="10-join.html" class="nav-btn">المحاضرة التالية: JOIN - ربط الجداول</a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 دورة SQL Server 2008 - م. ياسر المفعلاني</p>
+        </div>
+    </footer>
+</body>
+</html>
+
