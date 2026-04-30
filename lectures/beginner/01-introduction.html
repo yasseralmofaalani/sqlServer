@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المحاضرة 1: مقدمة في SQL Server 2008</title>
+    <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>المحاضرة 1: مقدمة في SQL Server 2008</h1>
+            <p class="instructor">مقدم الدورة: م. ياسر المفعلاني</p>
+        </div>
+    </header>
+
+    <nav class="main-nav">
+        <div class="container">
+            <ul>
+                <li><a href="../../index.html">الصفحة الرئيسية</a></li>
+                <li><a href="#content">المحتوى</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="lecture-content" id="content">
+            <h2>ما هو SQL Server 2008؟</h2>
+            <p>SQL Server 2008 هو نظام إدارة قواعد البيانات العلائقية (RDBMS) من شركة Microsoft. يوفر بيئة قوية وآمنة لإدارة وتخزين البيانات مع دعم متقدم للبيانات الجغرافية والمكانية.</p>
+
+            <h3>المميزات الرئيسية لـ SQL Server 2008:</h3>
+            <ul>
+                <li><strong>الأداء العالي:</strong> معالجة سريعة للاستعلامات المعقدة</li>
+                <li><strong>الأمان:</strong> نظام أمان متقدم مع التشفير</li>
+                <li><strong>قواعد البيانات الجغرافية:</strong> دعم كامل للبيانات المكانية (Spatial Data)</li>
+                <li><strong>التوافق:</strong> يعمل مع تطبيقات .NET و Java وغيرها</li>
+                <li><strong>إدارة سهلة:</strong> واجهة رسومية سهلة الاستخدام</li>
+            </ul>
+
+            <h2>المكونات الأساسية</h2>
+            
+            <h3>1. Database Engine</h3>
+            <p>المحرك الأساسي لقاعدة البيانات الذي يقوم بتخزين ومعالجة البيانات.</p>
+
+            <h3>2. SQL Server Management Studio (SSMS)</h3>
+            <p>الواجهة الرسومية الرئيسية لإدارة SQL Server وإنشاء الاستعلامات.</p>
+
+            <h3>3. SQL Server Agent</h3>
+            <p>أداة لجدولة المهام الأوتوماتيكية مثل النسخ الاحتياطي.</p>
+
+            <h3>4. Integration Services (SSIS)</h3>
+            <p>أداة لتحويل ونقل البيانات بين مصادر مختلفة.</p>
+
+            <h3>5. Reporting Services (SSRS)</h3>
+            <p>نظام لإنشاء وإدارة التقارير.</p>
+
+            <h3>6. Analysis Services (SSAS)</h3>
+            <p>أداة لتحليل البيانات وإنشاء OLAP cubes.</p>
+
+            <h2>واجهة SQL Server Management Studio</h2>
+            <p>SQL Server Management Studio (SSMS) هي الأداة الرئيسية للتعامل مع SQL Server. توفر:</p>
+            <ul>
+                <li>إنشاء وإدارة قواعد البيانات</li>
+                <li>كتابة وتنفيذ استعلامات T-SQL</li>
+                <li>إدارة المستخدمين والصلاحيات</li>
+                <li>مراقبة الأداء</li>
+                <li>إدارة النسخ الاحتياطي والاستعادة</li>
+            </ul>
+
+            <div class="note">
+                <strong>ملاحظة:</strong> تأكد من تثبيت SQL Server Management Studio بشكل منفصل بعد تثبيت SQL Server.
+            </div>
+
+            <h2>مفاهيم أساسية</h2>
+
+            <h3>قاعدة البيانات (Database)</h3>
+            <p>حاوية منطقية تحتوي على مجموعة من الجداول والكائنات الأخرى.</p>
+
+            <h3>الجدول (Table)</h3>
+            <p>مجموعة من الصفوف (Rows) والأعمدة (Columns) التي تخزن البيانات.</p>
+
+            <h3>السجل (Record/Row)</h3>
+            <p>صف واحد في الجدول يحتوي على بيانات كاملة لسجل معين.</p>
+
+            <h3>الحقل (Field/Column)</h3>
+            <p>عمود واحد في الجدول يحتوي على نوع محدد من البيانات.</p>
+
+            <h3>المفتاح الأساسي (Primary Key)</h3>
+            <p>عمود أو مجموعة أعمدة تحدد بشكل فريد كل سجل في الجدول.</p>
+
+            <h2>أنواع البيانات الأساسية</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>نوع البيانات</th>
+                        <th>الوصف</th>
+                        <th>مثال</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>INT</td>
+                        <td>أرقام صحيحة</td>
+                        <td>1, 100, -50</td>
+                    </tr>
+                    <tr>
+                        <td>VARCHAR(n)</td>
+                        <td>نص متغير الطول</td>
+                        <td>'مرحباً', 'Hello'</td>
+                    </tr>
+                    <tr>
+                        <td>NVARCHAR(n)</td>
+                        <td>نص Unicode متغير الطول</td>
+                        <td>'مرحباً', 'Hello'</td>
+                    </tr>
+                    <tr>
+                        <td>DATE</td>
+                        <td>تاريخ فقط</td>
+                        <td>2024-01-15</td>
+                    </tr>
+                    <tr>
+                        <td>DATETIME</td>
+                        <td>تاريخ ووقت</td>
+                        <td>2024-01-15 10:30:00</td>
+                    </tr>
+                    <tr>
+                        <td>DECIMAL(p,s)</td>
+                        <td>أرقام عشرية</td>
+                        <td>99.99, 1000.50</td>
+                    </tr>
+                    <tr>
+                        <td>BIT</td>
+                        <td>قيمة منطقية (0 أو 1)</td>
+                        <td>0, 1</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>ما هو T-SQL؟</h2>
+            <p>Transact-SQL (T-SQL) هو امتداد لـ SQL من Microsoft. يستخدم لكتابة الاستعلامات والبرامج في SQL Server.</p>
+
+            <h3>أمثلة على أوامر T-SQL الأساسية:</h3>
+            <div class="code-block">
+<code><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> الجدول;
+<span class="keyword">INSERT INTO</span> الجدول <span class="keyword">VALUES</span> (...);
+<span class="keyword">UPDATE</span> الجدول <span class="keyword">SET</span> العمود = القيمة;
+<span class="keyword">DELETE FROM</span> الجدول;
+</code>
+            </div>
+
+            <div class="tip">
+                <strong>نصيحة:</strong> ابدأ بتعلم الأوامر الأساسية قبل الانتقال للمواضيع المتقدمة.
+            </div>
+
+            <h2>الخلاصة</h2>
+            <ul>
+                <li>SQL Server 2008 نظام قوي لإدارة قواعد البيانات</li>
+                <li>يدعم البيانات الجغرافية والمكانية بشكل متقدم</li>
+                <li>SQL Server Management Studio هي الأداة الرئيسية للعمل</li>
+                <li>T-SQL هي لغة البرمجة المستخدمة</li>
+            </ul>
+
+            <div class="navigation">
+                <a href="../../index.html" class="nav-btn">العودة للصفحة الرئيسية</a>
+                <a href="02-installation.html" class="nav-btn">المحاضرة التالية: التثبيت والإعداد</a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 دورة SQL Server 2008 - م. ياسر المفعلاني</p>
+        </div>
+    </footer>
+</body>
+</html>
+
