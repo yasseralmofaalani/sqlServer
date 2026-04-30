@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المحاضرة 4: إنشاء الجداول (Tables)</title>
+    <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>المحاضرة 4: إنشاء الجداول (Tables)</h1>
+            <p class="instructor">مقدم الدورة: م. ياسر المفعلاني</p>
+        </div>
+    </header>
+
+    <nav class="main-nav">
+        <div class="container">
+            <ul>
+                <li><a href="../../index.html">الصفحة الرئيسية</a></li>
+                <li><a href="#content">المحتوى</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="lecture-content" id="content">
+            <h2>ما هو الجدول (Table)؟</h2>
+            <p>الجدول هو الكائن الأساسي في قاعدة البيانات الذي يحتوي على البيانات. يتكون من صفوف (Rows) وأعمدة (Columns).</p>
+
+            <h2>إنشاء جدول بسيط</h2>
+            <div class="code-block">
+<code><span class="keyword">USE</span> MyDatabase;
+<span class="keyword">GO</span>
+
+<span class="keyword">CREATE TABLE</span> الطلاب
+(
+    رقم_الطالب <span class="keyword">INT</span>,
+    الاسم <span class="keyword">NVARCHAR</span>(50),
+    العمر <span class="keyword">INT</span>,
+    التخصص <span class="keyword">NVARCHAR</span>(50)
+);
+</code>
+            </div>
+
+            <h2>أنواع البيانات الشائعة</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>نوع البيانات</th>
+                        <th>الحجم</th>
+                        <th>الوصف</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>INT</td>
+                        <td>4 bytes</td>
+                        <td>أرقام صحيحة من -2,147,483,648 إلى 2,147,483,647</td>
+                    </tr>
+                    <tr>
+                        <td>BIGINT</td>
+                        <td>8 bytes</td>
+                        <td>أرقام صحيحة كبيرة</td>
+                    </tr>
+                    <tr>
+                        <td>SMALLINT</td>
+                        <td>2 bytes</td>
+                        <td>أرقام صحيحة صغيرة</td>
+                    </tr>
+                    <tr>
+                        <td>TINYINT</td>
+                        <td>1 byte</td>
+                        <td>أرقام من 0 إلى 255</td>
+                    </tr>
+                    <tr>
+                        <td>DECIMAL(p,s)</td>
+                        <td>5-17 bytes</td>
+                        <td>أرقام عشرية دقيقة (p = الدقة، s = المقياس)</td>
+                    </tr>
+                    <tr>
+                        <td>FLOAT</td>
+                        <td>4-8 bytes</td>
+                        <td>أرقام عشرية تقريبية</td>
+                    </tr>
+                    <tr>
+                        <td>VARCHAR(n)</td>
+                        <td>متغير</td>
+                        <td>نص متغير الطول (غير Unicode)</td>
+                    </tr>
+                    <tr>
+                        <td>NVARCHAR(n)</td>
+                        <td>متغير</td>
+                        <td>نص Unicode متغير الطول (يدعم العربية)</td>
+                    </tr>
+                    <tr>
+                        <td>CHAR(n)</td>
+                        <td>ثابت</td>
+                        <td>نص ثابت الطول</td>
+                    </tr>
+                    <tr>
+                        <td>NCHAR(n)</td>
+                        <td>ثابت</td>
+                        <td>نص Unicode ثابت الطول</td>
+                    </tr>
+                    <tr>
+                        <td>DATE</td>
+                        <td>3 bytes</td>
+                        <td>تاريخ فقط (من 0001-01-01 إلى 9999-12-31)</td>
+                    </tr>
+                    <tr>
+                        <td>TIME</td>
+                        <td>3-5 bytes</td>
+                        <td>وقت فقط</td>
+                    </tr>
+                    <tr>
+                        <td>DATETIME</td>
+                        <td>8 bytes</td>
+                        <td>تاريخ ووقت</td>
+                    </tr>
+                    <tr>
+                        <td>BIT</td>
+                        <td>1 bit</td>
+                        <td>قيمة منطقية (0 أو 1)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="tip">
+                <strong>نصيحة:</strong> استخدم NVARCHAR بدلاً من VARCHAR للدعم الكامل للغة العربية.
+            </div>
+
+            <h2>إنشاء جدول مع قيود (Constraints)</h2>
+
+            <h3>المفتاح الأساسي (Primary Key)</h3>
+            <div class="code-block">
+<code><span class="keyword">CREATE TABLE</span> الطلاب
+(
+    رقم_الطالب <span class="keyword">INT</span> <span class="keyword">PRIMARY KEY</span>,
+    الاسم <span class="keyword">NVARCHAR</span>(50) <span class="keyword">NOT NULL</span>,
+    العمر <span class="keyword">INT</span>,
+    التخصص <span class="keyword">NVARCHAR</span>(50)
+);
+</code>
+            </div>
+
+            <h3>المفتاح الأساسي المركب</h3>
+            <div class="code-block">
+<code><span class="keyword">CREATE TABLE</span> التسجيلات
+(
+    رقم_الطالب <span class="keyword">INT</span>,
+    رقم_المادة <span class="keyword">INT</span>,
+    الدرجة <span class="keyword">DECIMAL</span>(5,2),
+    <span class="keyword">PRIMARY KEY</span> (رقم_الطالب, رقم_المادة)
+);
+</code>
+            </div>
+
+            <h3>NOT NULL - عدم السماح بالقيم الفارغة</h3>
+            <div class="code-block">
+<code><span class="keyword">CREATE TABLE</span> الطلاب
+(
+    رقم_الطالب <span class="keyword">INT</span> <span class="keyword">PRIMARY KEY</span>,
+    الاسم <span class="keyword">NVARCHAR</span>(50) <span class="keyword">NOT NULL</span>,
+    البريد_الإلكتروني <span class="keyword">NVARCHAR</span>(100) <span class="keyword">NOT NULL</span>,
+    الهاتف <span class="keyword">NVARCHAR</span>(20) <span class="keyword">NULL</span>
+);
+</code>
+            </div>
+
+            <h3>UNIQUE - القيم الفريدة</h3>
+            <div class="code-block">
+<code><span class="keyword">CREATE TABLE</span> الطلاب
+(
+    رقم_الطالب <span class="keyword">INT</span> <span class="keyword">PRIMARY KEY</span>,
+    الاسم <span class="keyword">NVARCHAR</span>(50) <span class="keyword">NOT NULL</span>,
+    البريد_الإلكتروني <span class="keyword">NVARCHAR</span>(100) <span class="keyword">UNIQUE</span>,
+    رقم_الهوية <span class="keyword">NVARCHAR</span>(20) <span class="keyword">UNIQUE</span>
+);
+</code>
+            </div>
+
+            <h3>CHECK - التحقق من القيم</h3>
+            <div class="code-block">
+<code><span class="keyword">CREATE TABLE</span> الطلاب
+(
+    رقم_الطالب <span class="keyword">INT</span> <span class="keyword">PRIMARY KEY</span>,
+    الاسم <span class="keyword">NVARCHAR</span>(50) <span class="keyword">NOT NULL</span>,
+    العمر <span class="keyword">INT</span> <span class="keyword">CHECK</span> (العمر >= 18 <span class="keyword">AND</span> العمر <= 100),
+    الدرجة <span class="keyword">DECIMAL</span>(5,2) <span class="keyword">CHECK</span> (الدرجة >= 0 <span class="keyword">AND</span> الدرجة <= 100)
+);
+</code>
+            </div>
+
+            <h3>DEFAULT - القيمة الافتراضية</h3>
+            <div class="code-block">
+<code><span class="keyword">CREATE TABLE</span> الطلاب
+(
+    رقم_الطالب <span class="keyword">INT</span> <span class="keyword">PRIMARY KEY</span>,
+    الاسم <span class="keyword">NVARCHAR</span>(50) <span class="keyword">NOT NULL</span>,
+    تاريخ_التسجيل <span class="keyword">DATETIME</span> <span class="keyword">DEFAULT</span> <span class="function">GETDATE</span>(),
+    الحالة <span class="keyword">NVARCHAR</span>(20) <span class="keyword">DEFAULT</span> <span class="string">'نشط'</span>
+);
+</code>
+            </div>
+
+            <h3>IDENTITY - الترقيم التلقائي</h3>
+            <div class="code-block">
+<code><span class="keyword">CREATE TABLE</span> الطلاب
+(
+    رقم_الطالب <span class="keyword">INT</span> <span class="keyword">IDENTITY</span>(1,1) <span class="keyword">PRIMARY KEY</span>,
+    الاسم <span class="keyword">NVARCHAR</span>(50) <span class="keyword">NOT NULL</span>,
+    العمر <span class="keyword">INT</span>
+);
+<span class="comment">-- IDENTITY(1,1) يعني يبدأ من 1 ويزيد بمقدار 1</span>
+</code>
+            </div>
+
+            <h2>مثال شامل لإنشاء جدول</h2>
+            <div class="code-block">
+<code><span class="keyword">CREATE TABLE</span> الموظفون
+(
+    رقم_الموظف <span class="keyword">INT</span> <span class="keyword">IDENTITY</span>(1,1) <span class="keyword">PRIMARY KEY</span>,
+    الاسم_الكامل <span class="keyword">NVARCHAR</span>(100) <span class="keyword">NOT NULL</span>,
+    البريد_الإلكتروني <span class="keyword">NVARCHAR</span>(100) <span class="keyword">UNIQUE</span> <span class="keyword">NOT NULL</span>,
+    الهاتف <span class="keyword">NVARCHAR</span>(20),
+    الراتب <span class="keyword">DECIMAL</span>(10,2) <span class="keyword">CHECK</span> (الراتب > 0),
+    تاريخ_التعيين <span class="keyword">DATE</span> <span class="keyword">DEFAULT</span> <span class="function">GETDATE</span>(),
+    القسم <span class="keyword">NVARCHAR</span>(50) <span class="keyword">DEFAULT</span> <span class="string">'غير محدد'</span>,
+    نشط <span class="keyword">BIT</span> <span class="keyword">DEFAULT</span> 1
+);
+</code>
+            </div>
+
+            <h2>عرض الجداول</h2>
+            <div class="code-block">
+<code><span class="comment">-- عرض جميع الجداول في قاعدة البيانات</span>
+<span class="keyword">SELECT</span> TABLE_NAME
+<span class="keyword">FROM</span> INFORMATION_SCHEMA.TABLES
+<span class="keyword">WHERE</span> TABLE_TYPE = <span class="string">'BASE TABLE'</span>;
+
+<span class="comment">-- عرض بنية جدول معين</span>
+<span class="keyword">EXEC</span> sp_help <span class="string">'الطلاب'</span>;
+
+<span class="comment">-- عرض أعمدة جدول</span>
+<span class="keyword">SELECT</span> 
+    COLUMN_NAME,
+    DATA_TYPE,
+    IS_NULLABLE,
+    COLUMN_DEFAULT
+<span class="keyword">FROM</span> INFORMATION_SCHEMA.COLUMNS
+<span class="keyword">WHERE</span> TABLE_NAME = <span class="string">'الطلاب'</span>;
+</code>
+            </div>
+
+            <h2>تعديل الجدول (ALTER TABLE)</h2>
+
+            <h3>إضافة عمود جديد</h3>
+            <div class="code-block">
+<code><span class="keyword">ALTER TABLE</span> الطلاب
+<span class="keyword">ADD</span> العنوان <span class="keyword">NVARCHAR</span>(200);
+</code>
+            </div>
+
+            <h3>تعديل عمود موجود</h3>
+            <div class="code-block">
+<code><span class="comment">-- تغيير نوع البيانات أو الحجم</span>
+<span class="keyword">ALTER TABLE</span> الطلاب
+<span class="keyword">ALTER COLUMN</span> الاسم <span class="keyword">NVARCHAR</span>(100);
+</code>
+            </div>
+
+            <h3>حذف عمود</h3>
+            <div class="code-block">
+<code><span class="keyword">ALTER TABLE</span> الطلاب
+<span class="keyword">DROP COLUMN</span> العنوان;
+</code>
+            </div>
+
+            <h3>إضافة قيد</h3>
+            <div class="code-block">
+<code><span class="keyword">ALTER TABLE</span> الطلاب
+<span class="keyword">ADD CONSTRAINT</span> CHK_Age <span class="keyword">CHECK</span> (العمر >= 18);
+</code>
+            </div>
+
+            <h3>حذف قيد</h3>
+            <div class="code-block">
+<code><span class="keyword">ALTER TABLE</span> الطلاب
+<span class="keyword">DROP CONSTRAINT</span> CHK_Age;
+</code>
+            </div>
+
+            <h2>حذف الجدول</h2>
+            <div class="code-block">
+<code><span class="comment">-- حذف جدول</span>
+<span class="keyword">DROP TABLE</span> الطلاب;
+
+<span class="comment">-- حذف جدول مع التحقق من وجوده</span>
+<span class="keyword">IF OBJECT_ID</span>(<span class="string">'الطلاب'</span>, <span class="string">'U'</span>) <span class="keyword">IS NOT NULL</span>
+    <span class="keyword">DROP TABLE</span> الطلاب;
+</code>
+            </div>
+
+            <div class="warning">
+                <strong>تحذير:</strong> حذف الجدول يحذف جميع البيانات الموجودة فيه ولا يمكن التراجع عنه!
+            </div>
+
+            <h2>أفضل الممارسات</h2>
+            <ul>
+                <li>استخدم أسماء واضحة ووصفية للجداول والأعمدة</li>
+                <li>استخدم NVARCHAR للدعم الكامل للعربية</li>
+                <li>حدد PRIMARY KEY لكل جدول</li>
+                <li>استخدم NOT NULL للأعمدة المطلوبة</li>
+                <li>استخدم CHECK للتحقق من صحة البيانات</li>
+                <li>استخدم IDENTITY للترقيم التلقائي</li>
+                <li>خطط لبنية الجدول قبل إنشائه</li>
+            </ul>
+
+            <h2>الخلاصة</h2>
+            <ul>
+                <li>الجدول هو الكائن الأساسي لتخزين البيانات</li>
+                <li>يمكن إضافة قيود مختلفة لضمان سلامة البيانات</li>
+                <li>يمكن تعديل الجدول باستخدام ALTER TABLE</li>
+                <li>التخطيط الجيد مهم قبل إنشاء الجداول</li>
+            </ul>
+
+            <div class="navigation">
+                <a href="03-databases.html" class="nav-btn">المحاضرة السابقة</a>
+                <a href="../../index.html" class="nav-btn">العودة للصفحة الرئيسية</a>
+                <a href="05-insert.html" class="nav-btn">المحاضرة التالية: إدراج البيانات</a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 دورة SQL Server 2008 - م. ياسر المفعلاني</p>
+        </div>
+    </footer>
+</body>
+</html>
+

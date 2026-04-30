@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المحاضرة 8: حذف البيانات (DELETE)</title>
+    <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>المحاضرة 8: حذف البيانات (DELETE)</h1>
+            <p class="instructor">مقدم الدورة: م. ياسر المفعلاني</p>
+        </div>
+    </header>
+
+    <nav class="main-nav">
+        <div class="container">
+            <ul>
+                <li><a href="../../index.html">الصفحة الرئيسية</a></li>
+                <li><a href="#content">المحتوى</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="lecture-content" id="content">
+            <h2>حذف سجل واحد</h2>
+            <p>DELETE يستخدم لحذف البيانات من الجداول.</p>
+
+            <h3>حذف سجل محدد</h3>
+            <div class="code-block">
+<code><span class="keyword">DELETE FROM</span> الطلاب
+<span class="keyword">WHERE</span> رقم_الطالب = 1;
+</code>
+            </div>
+
+            <h2>حذف عدة سجلات</h2>
+            <div class="code-block">
+<code><span class="comment">-- حذف جميع الطلاب في تخصص معين</span>
+<span class="keyword">DELETE FROM</span> الطلاب
+<span class="keyword">WHERE</span> التخصص = <span class="string">'علوم الحاسب'</span>;
+
+<span class="comment">-- حذف باستخدام IN</span>
+<span class="keyword">DELETE FROM</span> الطلاب
+<span class="keyword">WHERE</span> رقم_الطالب <span class="keyword">IN</span> (1, 2, 3);
+
+<span class="comment">-- حذف باستخدام BETWEEN</span>
+<span class="keyword">DELETE FROM</span> الطلاب
+<span class="keyword">WHERE</span> العمر <span class="keyword">BETWEEN</span> 20 <span class="keyword">AND</span> 25;
+</code>
+            </div>
+
+            <h2>حذف مع شروط معقدة</h2>
+            <div class="code-block">
+<code><span class="comment">-- حذف باستخدام AND</span>
+<span class="keyword">DELETE FROM</span> الطلاب
+<span class="keyword">WHERE</span> التخصص = <span class="string">'علوم الحاسب'</span> 
+    <span class="keyword">AND</span> العمر > 25;
+
+<span class="comment">-- حذف باستخدام OR</span>
+<span class="keyword">DELETE FROM</span> الطلاب
+<span class="keyword">WHERE</span> التخصص = <span class="string">'علوم الحاسب'</span> 
+    <span class="keyword">OR</span> التخصص = <span class="string">'الهندسة'</span>;
+
+<span class="comment">-- حذف باستخدام LIKE</span>
+<span class="keyword">DELETE FROM</span> الطلاب
+<span class="keyword">WHERE</span> الاسم <span class="keyword">LIKE</span> <span class="string">'أحمد%'</span>;
+</code>
+            </div>
+
+            <h2>حذف من جدول مرتبط</h2>
+            <div class="code-block">
+<code><span class="comment">-- حذف باستخدام JOIN</span>
+<span class="keyword">DELETE</span> ط
+<span class="keyword">FROM</span> الطلاب ط
+<span class="keyword">INNER JOIN</span> التسجيلات ت
+    <span class="keyword">ON</span> ط.رقم_الطالب = ت.رقم_الطالب
+<span class="keyword">WHERE</span> ت.الدرجة < 50;
+</code>
+            </div>
+
+            <h2>حذف مع OUTPUT</h2>
+            <p>OUTPUT يسمح بعرض البيانات المحذوفة:</p>
+            <div class="code-block">
+<code><span class="keyword">DELETE FROM</span> الطلاب
+<span class="keyword">OUTPUT</span> DELETED.*
+<span class="keyword">WHERE</span> رقم_الطالب = 1;
+</code>
+            </div>
+
+            <h2>التحقق قبل الحذف</h2>
+            <div class="code-block">
+<code><span class="comment">-- عرض البيانات قبل الحذف</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> الطلاب
+<span class="keyword">WHERE</span> رقم_الطالب = 1;
+
+<span class="comment">-- الحذف</span>
+<span class="keyword">DELETE FROM</span> الطلاب
+<span class="keyword">WHERE</span> رقم_الطالب = 1;
+
+<span class="comment">-- التحقق بعد الحذف</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> الطلاب
+<span class="keyword">WHERE</span> رقم_الطالب = 1;
+</code>
+            </div>
+
+            <h2>TRUNCATE TABLE - حذف جميع السجلات</h2>
+            <p>TRUNCATE TABLE يحذف جميع السجلات من الجدول بشكل أسرع من DELETE.</p>
+
+            <div class="code-block">
+<code><span class="comment">-- حذف جميع السجلات</span>
+<span class="keyword">TRUNCATE TABLE</span> الطلاب;
+</code>
+            </div>
+
+            <h3>الفرق بين DELETE و TRUNCATE:</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>DELETE</th>
+                        <th>TRUNCATE</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>يمكن استخدام WHERE</td>
+                        <td>لا يمكن استخدام WHERE (يحذف الكل)</td>
+                    </tr>
+                    <tr>
+                        <td>أبطأ</td>
+                        <td>أسرع</td>
+                    </tr>
+                    <tr>
+                        <td>يسجل في Transaction Log</td>
+                        <td>يسجل الحد الأدنى في Transaction Log</td>
+                    </tr>
+                    <tr>
+                        <td>يمكن التراجع عنه</td>
+                        <td>صعب التراجع عنه</td>
+                    </tr>
+                    <tr>
+                        <td>يعيد تعيين IDENTITY</td>
+                        <td>لا يعيد تعيين IDENTITY</td>
+                    </tr>
+                    <tr>
+                        <td>يعمل مع Foreign Keys</td>
+                        <td>لا يعمل إذا كان هناك Foreign Keys</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="warning">
+                <strong>تحذير:</strong> TRUNCATE TABLE لا يمكن التراجع عنه بسهولة! استخدمه بحذر.
+            </div>
+
+            <h2>معالجة الأخطاء</h2>
+            <div class="code-block">
+<code><span class="keyword">BEGIN TRY</span>
+    <span class="keyword">BEGIN TRANSACTION</span>;
+    
+    <span class="keyword">DELETE FROM</span> الطلاب
+    <span class="keyword">WHERE</span> رقم_الطالب = 1;
+    
+    <span class="keyword">COMMIT TRANSACTION</span>;
+    <span class="function">PRINT</span> <span class="string">'تم الحذف بنجاح'</span>;
+<span class="keyword">END TRY</span>
+<span class="keyword">BEGIN CATCH</span>
+    <span class="keyword">ROLLBACK TRANSACTION</span>;
+    <span class="function">PRINT</span> <span class="string">'حدث خطأ: '</span> + <span class="function">ERROR_MESSAGE</span>();
+<span class="keyword">END CATCH</span>;
+</code>
+            </div>
+
+            <h2>حذف مع Foreign Keys</h2>
+            <p>إذا كان الجدول مرتبطاً بجداول أخرى، قد تحتاج لحذف السجلات المرتبطة أولاً:</p>
+            <div class="code-block">
+<code><span class="comment">-- حذف السجلات المرتبطة أولاً</span>
+<span class="keyword">DELETE FROM</span> التسجيلات
+<span class="keyword">WHERE</span> رقم_الطالب = 1;
+
+<span class="comment">-- ثم حذف السجل الرئيسي</span>
+<span class="keyword">DELETE FROM</span> الطلاب
+<span class="keyword">WHERE</span> رقم_الطالب = 1;
+</code>
+            </div>
+
+            <h2>CASCADE DELETE</h2>
+            <p>يمكن إعداد Foreign Key لحذف السجلات المرتبطة تلقائياً:</p>
+            <div class="code-block">
+<code><span class="comment">-- إنشاء Foreign Key مع CASCADE DELETE</span>
+<span class="keyword">ALTER TABLE</span> التسجيلات
+<span class="keyword">ADD CONSTRAINT</span> FK_Student
+<span class="keyword">FOREIGN KEY</span> (رقم_الطالب)
+<span class="keyword">REFERENCES</span> الطلاب(رقم_الطالب)
+<span class="keyword">ON DELETE CASCADE</span>;
+<span class="comment">-- الآن عند حذف طالب، سيتم حذف تسجيلاته تلقائياً</span>
+</code>
+            </div>
+
+            <div class="warning">
+                <strong>تحذير مهم:</strong> بدون WHERE، سيتم حذف جميع السجلات في الجدول! تأكد دائماً من استخدام WHERE.
+            </div>
+
+            <h2>مثال خاطئ (خطير!)</h2>
+            <div class="code-block">
+<code><span class="comment">-- ⚠️ هذا سيحذف جميع السجلات!</span>
+<span class="keyword">DELETE FROM</span> الطلاب;
+<span class="comment">-- بدون WHERE، سيتم حذف جميع الطلاب!</span>
+</code>
+            </div>
+
+            <h2>مثال شامل</h2>
+            <div class="code-block">
+<code><span class="comment">-- حذف شامل مع شروط متعددة</span>
+<span class="keyword">BEGIN TRANSACTION</span>;
+
+<span class="comment">-- التحقق من عدد السجلات التي سيتم حذفها</span>
+<span class="keyword">SELECT</span> <span class="function">COUNT</span>(*) <span class="keyword">AS</span> عدد_السجلات_للحذف
+<span class="keyword">FROM</span> الطلاب
+<span class="keyword">WHERE</span> 
+    العمر <span class="keyword">BETWEEN</span> 20 <span class="keyword">AND</span> 25
+    <span class="keyword">AND</span> التخصص = <span class="string">'علوم الحاسب'</span>;
+
+<span class="comment">-- الحذف</span>
+<span class="keyword">DELETE FROM</span> الطلاب
+<span class="keyword">WHERE</span> 
+    العمر <span class="keyword">BETWEEN</span> 20 <span class="keyword">AND</span> 25
+    <span class="keyword">AND</span> التخصص = <span class="string">'علوم الحاسب'</span>;
+
+<span class="comment">-- إذا كان كل شيء صحيح، قم بالتنفيذ</span>
+<span class="comment">-- COMMIT TRANSACTION;</span>
+<span class="comment">-- إذا كان هناك خطأ، قم بالتراجع</span>
+<span class="comment">-- ROLLBACK TRANSACTION;</span>
+</code>
+            </div>
+
+            <h2>أفضل الممارسات</h2>
+            <ul>
+                <li>استخدم WHERE دائماً لتحديد السجلات المطلوب حذفها</li>
+                <li>تحقق من البيانات قبل الحذف باستخدام SELECT</li>
+                <li>استخدم TRANSACTIONS للحذف المهم</li>
+                <li>استخدم OUTPUT للتحقق من البيانات المحذوفة</li>
+                <li>احتفظ بنسخة احتياطية قبل الحذف</li>
+                <li>تأكد من حذف السجلات المرتبطة أولاً (أو استخدم CASCADE)</li>
+                <li>استخدم TRY...CATCH لمعالجة الأخطاء</li>
+            </ul>
+
+            <div class="tip">
+                <strong>نصيحة:</strong> استخدم SELECT أولاً لمعرفة عدد السجلات التي سيتم حذفها قبل تنفيذ DELETE.
+            </div>
+
+            <h2>الخلاصة</h2>
+            <ul>
+                <li>DELETE يستخدم لحذف البيانات من الجداول</li>
+                <li>استخدم WHERE دائماً لتحديد السجلات</li>
+                <li>TRUNCATE TABLE أسرع لحذف جميع السجلات</li>
+                <li>استخدم TRANSACTIONS للحذف المهم</li>
+                <li>تأكد من حذف السجلات المرتبطة</li>
+            </ul>
+
+            <div class="navigation">
+                <a href="07-update.html" class="nav-btn">المحاضرة السابقة</a>
+                <a href="../../index.html" class="nav-btn">العودة للصفحة الرئيسية</a>
+                <a href="../intermediate/09-relationships.html" class="nav-btn">المحاضرة التالية: العلاقات بين الجداول</a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 دورة SQL Server 2008 - م. ياسر المفعلاني</p>
+        </div>
+    </footer>
+</body>
+</html>
+

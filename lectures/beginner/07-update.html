@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المحاضرة 7: تحديث البيانات (UPDATE)</title>
+    <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>المحاضرة 7: تحديث البيانات (UPDATE)</h1>
+            <p class="instructor">مقدم الدورة: م. ياسر المفعلاني</p>
+        </div>
+    </header>
+
+    <nav class="main-nav">
+        <div class="container">
+            <ul>
+                <li><a href="../../index.html">الصفحة الرئيسية</a></li>
+                <li><a href="#content">المحتوى</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="lecture-content" id="content">
+            <h2>تحديث سجل واحد</h2>
+            <p>UPDATE يستخدم لتعديل البيانات الموجودة في الجداول.</p>
+
+            <h3>تحديث عمود واحد</h3>
+            <div class="code-block">
+<code><span class="keyword">UPDATE</span> الطلاب
+<span class="keyword">SET</span> العمر = 21
+<span class="keyword">WHERE</span> رقم_الطالب = 1;
+</code>
+            </div>
+
+            <h3>تحديث عدة أعمدة</h3>
+            <div class="code-block">
+<code><span class="keyword">UPDATE</span> الطلاب
+<span class="keyword">SET</span> 
+    العمر = 22,
+    التخصص = <span class="string">'الهندسة'</span>
+<span class="keyword">WHERE</span> رقم_الطالب = 1;
+</code>
+            </div>
+
+            <h2>تحديث عدة سجلات</h2>
+            <div class="code-block">
+<code><span class="comment">-- تحديث جميع الطلاب في تخصص معين</span>
+<span class="keyword">UPDATE</span> الطلاب
+<span class="keyword">SET</span> العمر = العمر + 1
+<span class="keyword">WHERE</span> التخصص = <span class="string">'علوم الحاسب'</span>;
+</code>
+            </div>
+
+            <h2>تحديث مع شروط معقدة</h2>
+            <div class="code-block">
+<code><span class="comment">-- تحديث باستخدام AND</span>
+<span class="keyword">UPDATE</span> الطلاب
+<span class="keyword">SET</span> التخصص = <span class="string">'علوم الحاسب المتقدم'</span>
+<span class="keyword">WHERE</span> التخصص = <span class="string">'علوم الحاسب'</span> 
+    <span class="keyword">AND</span> العمر > 20;
+
+<span class="comment">-- تحديث باستخدام IN</span>
+<span class="keyword">UPDATE</span> الطلاب
+<span class="keyword">SET</span> العمر = العمر + 1
+<span class="keyword">WHERE</span> رقم_الطالب <span class="keyword">IN</span> (1, 2, 3, 4, 5);
+
+<span class="comment">-- تحديث باستخدام BETWEEN</span>
+<span class="keyword">UPDATE</span> الطلاب
+<span class="keyword">SET</span> التخصص = <span class="string">'تخصص محدث'</span>
+<span class="keyword">WHERE</span> العمر <span class="keyword">BETWEEN</span> 20 <span class="keyword">AND</span> 25;
+</code>
+            </div>
+
+            <h2>تحديث مع الحسابات</h2>
+            <div class="code-block">
+<code><span class="comment">-- زيادة العمر بمقدار 1</span>
+<span class="keyword">UPDATE</span> الطلاب
+<span class="keyword">SET</span> العمر = العمر + 1;
+
+<span class="comment">-- ضرب الراتب في 1.1 (زيادة 10%)</span>
+<span class="keyword">UPDATE</span> الموظفون
+<span class="keyword">SET</span> الراتب = الراتب * 1.1
+<span class="keyword">WHERE</span> القسم = <span class="string">'المبيعات'</span>;
+</code>
+            </div>
+
+            <h2>تحديث مع NULL</h2>
+            <div class="code-block">
+<code><span class="comment">-- تعيين قيمة NULL</span>
+<span class="keyword">UPDATE</span> الطلاب
+<span class="keyword">SET</span> التخصص = <span class="keyword">NULL</span>
+<span class="keyword">WHERE</span> رقم_الطالب = 1;
+</code>
+            </div>
+
+            <h2>تحديث من جدول آخر</h2>
+            <div class="code-block">
+<code><span class="comment">-- إنشاء جدول للتحديثات</span>
+<span class="keyword">CREATE TABLE</span> تحديثات_الطلاب
+(
+    رقم_الطالب <span class="keyword">INT</span>,
+    العمر_الجديد <span class="keyword">INT</span>
+);
+
+<span class="comment">-- تحديث من جدول آخر</span>
+<span class="keyword">UPDATE</span> الطلاب
+<span class="keyword">SET</span> العمر = تحديثات_الطلاب.العمر_الجديد
+<span class="keyword">FROM</span> تحديثات_الطلاب
+<span class="keyword">WHERE</span> الطلاب.رقم_الطالب = تحديثات_الطلاب.رقم_الطالب;
+</code>
+            </div>
+
+            <h2>تحديث مع JOIN</h2>
+            <div class="code-block">
+<code><span class="comment">-- تحديث مع INNER JOIN</span>
+<span class="keyword">UPDATE</span> ط
+<span class="keyword">SET</span> ط.العمر = م.العمر_الجديد
+<span class="keyword">FROM</span> الطلاب ط
+<span class="keyword">INNER JOIN</span> تحديثات_الطلاب م
+    <span class="keyword">ON</span> ط.رقم_الطالب = م.رقم_الطالب;
+</code>
+            </div>
+
+            <h2>تحديث مع OUTPUT</h2>
+            <p>OUTPUT يسمح بعرض البيانات المحدثة:</p>
+            <div class="code-block">
+<code><span class="keyword">UPDATE</span> الطلاب
+<span class="keyword">SET</span> العمر = العمر + 1
+<span class="keyword">OUTPUT</span> 
+    INSERTED.رقم_الطالب,
+    DELETED.العمر <span class="keyword">AS</span> العمر_القديم,
+    INSERTED.العمر <span class="keyword">AS</span> العمر_الجديد
+<span class="keyword">WHERE</span> رقم_الطالب = 1;
+</code>
+            </div>
+
+            <h2>التحقق قبل التحديث</h2>
+            <div class="code-block">
+<code><span class="comment">-- عرض البيانات قبل التحديث</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> الطلاب
+<span class="keyword">WHERE</span> رقم_الطالب = 1;
+
+<span class="comment">-- التحديث</span>
+<span class="keyword">UPDATE</span> الطلاب
+<span class="keyword">SET</span> العمر = 22
+<span class="keyword">WHERE</span> رقم_الطالب = 1;
+
+<span class="comment">-- التحقق بعد التحديث</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> الطلاب
+<span class="keyword">WHERE</span> رقم_الطالب = 1;
+</code>
+            </div>
+
+            <h2>معالجة الأخطاء</h2>
+            <div class="code-block">
+<code><span class="keyword">BEGIN TRY</span>
+    <span class="keyword">BEGIN TRANSACTION</span>;
+    
+    <span class="keyword">UPDATE</span> الطلاب
+    <span class="keyword">SET</span> العمر = 22
+    <span class="keyword">WHERE</span> رقم_الطالب = 1;
+    
+    <span class="keyword">COMMIT TRANSACTION</span>;
+    <span class="function">PRINT</span> <span class="string">'تم التحديث بنجاح'</span>;
+<span class="keyword">END TRY</span>
+<span class="keyword">BEGIN CATCH</span>
+    <span class="keyword">ROLLBACK TRANSACTION</span>;
+    <span class="function">PRINT</span> <span class="string">'حدث خطأ: '</span> + <span class="function">ERROR_MESSAGE</span>();
+<span class="keyword">END CATCH</span>;
+</code>
+            </div>
+
+            <div class="warning">
+                <strong>تحذير مهم:</strong> بدون WHERE، سيتم تحديث جميع السجلات في الجدول! تأكد دائماً من استخدام WHERE.
+            </div>
+
+            <h2>مثال خاطئ (خطير!)</h2>
+            <div class="code-block">
+<code><span class="comment">-- ⚠️ هذا سيحدث جميع السجلات!</span>
+<span class="keyword">UPDATE</span> الطلاب
+<span class="keyword">SET</span> العمر = 20;
+<span class="comment">-- بدون WHERE، سيتم تحديث جميع الطلاب!</span>
+</code>
+            </div>
+
+            <h2>مثال شامل</h2>
+            <div class="code-block">
+<code><span class="comment">-- تحديث شامل مع شروط متعددة</span>
+<span class="keyword">UPDATE</span> الطلاب
+<span class="keyword">SET</span> 
+    العمر = العمر + 1,
+    التخصص = <span class="string">'تخصص محدث'</span>
+<span class="keyword">WHERE</span> 
+    العمر <span class="keyword">BETWEEN</span> 20 <span class="keyword">AND</span> 25
+    <span class="keyword">AND</span> التخصص <span class="keyword">IN</span> (<span class="string">'علوم الحاسب'</span>, <span class="string">'الهندسة'</span>)
+    <span class="keyword">AND</span> الاسم <span class="keyword">LIKE</span> <span class="string">'أ%'</span>;
+</code>
+            </div>
+
+            <h2>أفضل الممارسات</h2>
+            <ul>
+                <li>استخدم WHERE دائماً لتحديد السجلات المطلوب تحديثها</li>
+                <li>تحقق من البيانات قبل التحديث باستخدام SELECT</li>
+                <li>استخدم TRANSACTIONS للتحديثات المهمة</li>
+                <li>استخدم OUTPUT للتحقق من التحديثات</li>
+                <li>استخدم TRY...CATCH لمعالجة الأخطاء</li>
+                <li>احتفظ بنسخة احتياطية قبل التحديثات الكبيرة</li>
+            </ul>
+
+            <div class="tip">
+                <strong>نصيحة:</strong> استخدم SELECT أولاً لمعرفة عدد السجلات التي سيتم تحديثها قبل تنفيذ UPDATE.
+            </div>
+
+            <h2>الخلاصة</h2>
+            <ul>
+                <li>UPDATE يستخدم لتعديل البيانات الموجودة</li>
+                <li>استخدم WHERE دائماً لتحديد السجلات</li>
+                <li>يمكن تحديث عمود واحد أو عدة أعمدة</li>
+                <li>يمكن استخدام الحسابات في SET</li>
+                <li>استخدم TRANSACTIONS للتحديثات المهمة</li>
+            </ul>
+
+            <div class="navigation">
+                <a href="06-select.html" class="nav-btn">المحاضرة السابقة</a>
+                <a href="../../index.html" class="nav-btn">العودة للصفحة الرئيسية</a>
+                <a href="08-delete.html" class="nav-btn">المحاضرة التالية: حذف البيانات</a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 دورة SQL Server 2008 - م. ياسر المفعلاني</p>
+        </div>
+    </footer>
+</body>
+</html>
+

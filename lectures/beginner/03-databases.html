@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المحاضرة 3: إنشاء وإدارة قواعد البيانات</title>
+    <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>المحاضرة 3: إنشاء وإدارة قواعد البيانات</h1>
+            <p class="instructor">مقدم الدورة: م. ياسر المفعلاني</p>
+        </div>
+    </header>
+
+    <nav class="main-nav">
+        <div class="container">
+            <ul>
+                <li><a href="../../index.html">الصفحة الرئيسية</a></li>
+                <li><a href="#content">المحتوى</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="lecture-content" id="content">
+            <h2>إنشاء قاعدة بيانات</h2>
+
+            <h3>الطريقة 1: استخدام T-SQL</h3>
+            <div class="code-block">
+<code><span class="keyword">CREATE DATABASE</span> قاعدة_البيانات_الأولى;
+<span class="comment">-- مثال بسيط</span>
+<span class="keyword">CREATE DATABASE</span> MyDatabase;
+</code>
+            </div>
+
+            <h3>الطريقة 2: إنشاء قاعدة بيانات مع خيارات</h3>
+            <div class="code-block">
+<code><span class="keyword">CREATE DATABASE</span> MyDatabase
+<span class="keyword">ON</span> 
+(
+    NAME = <span class="string">'MyDatabase_Data'</span>,
+    FILENAME = <span class="string">'C:\Data\MyDatabase.mdf'</span>,
+    SIZE = 10MB,
+    MAXSIZE = 100MB,
+    FILEGROWTH = 5MB
+)
+<span class="keyword">LOG ON</span>
+(
+    NAME = <span class="string">'MyDatabase_Log'</span>,
+    FILENAME = <span class="string">'C:\Data\MyDatabase.ldf'</span>,
+    SIZE = 5MB,
+    MAXSIZE = 50MB,
+    FILEGROWTH = 2MB
+);
+</code>
+            </div>
+
+            <h3>شرح المعاملات:</h3>
+            <ul>
+                <li><strong>NAME:</strong> الاسم المنطقي للملف</li>
+                <li><strong>FILENAME:</strong> المسار الفعلي للملف على القرص</li>
+                <li><strong>SIZE:</strong> الحجم الابتدائي</li>
+                <li><strong>MAXSIZE:</strong> الحد الأقصى للحجم</li>
+                <li><strong>FILEGROWTH:</strong> مقدار النمو التلقائي</li>
+            </ul>
+
+            <h2>عرض قواعد البيانات</h2>
+            <div class="code-block">
+<code><span class="comment">-- عرض جميع قواعد البيانات</span>
+<span class="keyword">SELECT</span> name, database_id, create_date 
+<span class="keyword">FROM</span> sys.databases;
+
+<span class="comment">-- عرض معلومات قاعدة بيانات محددة</span>
+<span class="keyword">EXEC</span> sp_helpdb <span class="string">'MyDatabase'</span>;
+
+<span class="comment">-- عرض حجم قاعدة البيانات</span>
+<span class="keyword">EXEC</span> sp_spaceused;
+</code>
+            </div>
+
+            <h2>تغيير قاعدة البيانات الحالية</h2>
+            <div class="code-block">
+<code><span class="comment">-- استخدام قاعدة بيانات معينة</span>
+<span class="keyword">USE</span> MyDatabase;
+<span class="keyword">GO</span>
+
+<span class="comment">-- عرض قاعدة البيانات الحالية</span>
+<span class="keyword">SELECT</span> DB_NAME() <span class="keyword">AS</span> CurrentDatabase;
+</code>
+            </div>
+
+            <div class="note">
+                <strong>ملاحظة:</strong> GO هو أمر خاص في SSMS يفصل بين مجموعات الأوامر.
+            </div>
+
+            <h2>تعديل قاعدة البيانات</h2>
+
+            <h3>إضافة ملف بيانات جديد</h3>
+            <div class="code-block">
+<code><span class="keyword">ALTER DATABASE</span> MyDatabase
+<span class="keyword">ADD FILE</span>
+(
+    NAME = <span class="string">'MyDatabase_Data2'</span>,
+    FILENAME = <span class="string">'C:\Data\MyDatabase_Data2.ndf'</span>,
+    SIZE = 10MB,
+    MAXSIZE = 100MB,
+    FILEGROWTH = 5MB
+);
+</code>
+            </div>
+
+            <h3>تغيير حجم قاعدة البيانات</h3>
+            <div class="code-block">
+<code><span class="keyword">ALTER DATABASE</span> MyDatabase
+<span class="keyword">MODIFY FILE</span>
+(
+    NAME = <span class="string">'MyDatabase_Data'</span>,
+    SIZE = 50MB
+);
+</code>
+            </div>
+
+            <h3>تغيير خيارات قاعدة البيانات</h3>
+            <div class="code-block">
+<code><span class="comment">-- تغيير Collation</span>
+<span class="keyword">ALTER DATABASE</span> MyDatabase
+<span class="keyword">COLLATE</span> Arabic_CI_AS;
+
+<span class="comment">-- تعيين قاعدة البيانات للقراءة فقط</span>
+<span class="keyword">ALTER DATABASE</span> MyDatabase <span class="keyword">SET</span> READ_ONLY;
+
+<span class="comment">-- إعادة تعيينها للقراءة والكتابة</span>
+<span class="keyword">ALTER DATABASE</span> MyDatabase <span class="keyword">SET</span> READ_WRITE;
+</code>
+            </div>
+
+            <h2>حذف قاعدة بيانات</h2>
+            <div class="code-block">
+<code><span class="comment">-- حذف قاعدة بيانات (يجب إغلاق جميع الاتصالات أولاً)</span>
+<span class="keyword">DROP DATABASE</span> MyDatabase;
+
+<span class="comment">-- حذف قاعدة بيانات مع إغلاق الاتصالات</span>
+<span class="keyword">ALTER DATABASE</span> MyDatabase <span class="keyword">SET</span> SINGLE_USER <span class="keyword">WITH</span> ROLLBACK IMMEDIATE;
+<span class="keyword">DROP DATABASE</span> MyDatabase;
+</code>
+            </div>
+
+            <div class="warning">
+                <strong>تحذير:</strong> حذف قاعدة البيانات لا يمكن التراجع عنه! تأكد من وجود نسخة احتياطية.
+            </div>
+
+            <h2>النسخ الاحتياطي (Backup)</h2>
+
+            <h3>إنشاء نسخة احتياطية كاملة</h3>
+            <div class="code-block">
+<code><span class="keyword">BACKUP DATABASE</span> MyDatabase
+<span class="keyword">TO DISK</span> = <span class="string">'C:\Backup\MyDatabase.bak'</span>
+<span class="keyword">WITH</span> FORMAT,
+    NAME = <span class="string">'Full Backup of MyDatabase'</span>,
+    DESCRIPTION = <span class="string">'Full backup created on '</span> + <span class="function">CONVERT</span>(<span class="keyword">VARCHAR</span>(20), <span class="function">GETDATE</span>());
+</code>
+            </div>
+
+            <h3>استعادة قاعدة البيانات</h3>
+            <div class="code-block">
+<code><span class="keyword">RESTORE DATABASE</span> MyDatabase
+<span class="keyword">FROM DISK</span> = <span class="string">'C:\Backup\MyDatabase.bak'</span>
+<span class="keyword">WITH</span> REPLACE;
+</code>
+            </div>
+
+            <h2>Filegroups - مجموعات الملفات</h2>
+            <p>Filegroups تساعد في تنظيم ملفات قاعدة البيانات:</p>
+
+            <div class="code-block">
+<code><span class="comment">-- إنشاء Filegroup جديد</span>
+<span class="keyword">ALTER DATABASE</span> MyDatabase
+<span class="keyword">ADD FILEGROUP</span> FG_Data;
+
+<span class="comment">-- إضافة ملف إلى Filegroup</span>
+<span class="keyword">ALTER DATABASE</span> MyDatabase
+<span class="keyword">ADD FILE</span>
+(
+    NAME = <span class="string">'MyDatabase_Data3'</span>,
+    FILENAME = <span class="string">'C:\Data\MyDatabase_Data3.ndf'</span>,
+    SIZE = 10MB
+)
+<span class="keyword">TO FILEGROUP</span> FG_Data;
+</code>
+            </div>
+
+            <h2>معلومات إضافية عن قاعدة البيانات</h2>
+            <div class="code-block">
+<code><span class="comment">-- عرض معلومات الملفات</span>
+<span class="keyword">SELECT</span> 
+    name,
+    physical_name,
+    size * 8 / 1024 <span class="keyword">AS</span> SizeMB,
+    max_size,
+    growth
+<span class="keyword">FROM</span> sys.database_files;
+
+<span class="comment">-- عرض Filegroups</span>
+<span class="keyword">SELECT</span> name, type_desc
+<span class="keyword">FROM</span> sys.filegroups;
+
+<span class="comment">-- عرض خيارات قاعدة البيانات</span>
+<span class="keyword">SELECT</span> 
+    name,
+    collation_name,
+    recovery_model_desc,
+    compatibility_level
+<span class="keyword">FROM</span> sys.databases
+<span class="keyword">WHERE</span> name = <span class="string">'MyDatabase'</span>;
+</code>
+            </div>
+
+            <h2>أفضل الممارسات</h2>
+            <ul>
+                <li>استخدم أسماء واضحة ووصفية لقواعد البيانات</li>
+                <li>خطط لحجم قاعدة البيانات مسبقاً</li>
+                <li>استخدم Filegroups لتنظيم الملفات الكبيرة</li>
+                <li>قم بعمل نسخ احتياطية منتظمة</li>
+                <li>راقب نمو قاعدة البيانات</li>
+                <li>استخدم مسارات منفصلة لملفات البيانات والـ Log</li>
+            </ul>
+
+            <div class="tip">
+                <strong>نصيحة:</strong> ضع ملفات البيانات على قرص مختلف عن ملفات الـ Log لتحسين الأداء.
+            </div>
+
+            <h2>الخلاصة</h2>
+            <ul>
+                <li>يمكن إنشاء قاعدة بيانات باستخدام T-SQL أو الواجهة الرسومية</li>
+                <li>يمكن تعديل قاعدة البيانات باستخدام ALTER DATABASE</li>
+                <li>النسخ الاحتياطي مهم جداً لحماية البيانات</li>
+                <li>Filegroups تساعد في إدارة الملفات الكبيرة</li>
+            </ul>
+
+            <div class="navigation">
+                <a href="02-installation.html" class="nav-btn">المحاضرة السابقة</a>
+                <a href="../../index.html" class="nav-btn">العودة للصفحة الرئيسية</a>
+                <a href="04-tables.html" class="nav-btn">المحاضرة التالية: إنشاء الجداول</a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 دورة SQL Server 2008 - م. ياسر المفعلاني</p>
+        </div>
+    </footer>
+</body>
+</html>
+

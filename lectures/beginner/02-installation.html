@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المحاضرة 2: تثبيت وإعداد SQL Server 2008</title>
+    <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>المحاضرة 2: تثبيت وإعداد SQL Server 2008</h1>
+            <p class="instructor">مقدم الدورة: م. ياسر المفعلاني</p>
+        </div>
+    </header>
+
+    <nav class="main-nav">
+        <div class="container">
+            <ul>
+                <li><a href="../../index.html">الصفحة الرئيسية</a></li>
+                <li><a href="#content">المحتوى</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="lecture-content" id="content">
+            <h2>متطلبات النظام</h2>
+            
+            <h3>المتطلبات الأساسية:</h3>
+            <ul>
+                <li><strong>نظام التشغيل:</strong> Windows Server 2008 أو Windows Vista/7/8/10</li>
+                <li><strong>المعالج:</strong> معالج 1.4 GHz أو أسرع (2.0 GHz موصى به)</li>
+                <li><strong>الذاكرة:</strong> 512 MB على الأقل (2 GB موصى به)</li>
+                <li><strong>مساحة القرص:</strong> 1.5 GB على الأقل للبرنامج الأساسي</li>
+                <li><strong>.NET Framework:</strong> الإصدار 3.5 أو أحدث</li>
+            </ul>
+
+            <h2>خطوات التثبيت</h2>
+
+            <h3>الخطوة 1: تشغيل ملف التثبيت</h3>
+            <ol>
+                <li>قم بتشغيل ملف setup.exe من قرص التثبيت</li>
+                <li>اختر "New SQL Server stand-alone installation"</li>
+                <li>سيتم فحص المتطلبات الأساسية</li>
+            </ol>
+
+            <h3>الخطوة 2: اختيار الميزات (Features)</h3>
+            <p>اختر الميزات التي تريد تثبيتها:</p>
+            <ul>
+                <li><strong>Database Engine Services:</strong> المكون الأساسي (مطلوب)</li>
+                <li><strong>SQL Server Replication:</strong> للنسخ المتماثل</li>
+                <li><strong>Full-Text Search:</strong> للبحث النصي الكامل</li>
+                <li><strong>Management Tools:</strong> أدوات الإدارة (موصى به بشدة)</li>
+            </ul>
+
+            <div class="code-block">
+<code><span class="comment">// مثال على تثبيت الميزات الأساسية</span>
+<span class="comment">// تأكد من اختيار:</span>
+<span class="comment">// ✓ Database Engine Services</span>
+<span class="comment">// ✓ Management Tools - Basic</span>
+<span class="comment">// ✓ Management Tools - Complete</span>
+</code>
+            </div>
+
+            <h3>الخطوة 3: إعداد Instance</h3>
+            <p>Instance هو نسخة من SQL Server. يمكن تثبيت عدة instances على نفس الخادم.</p>
+            <ul>
+                <li><strong>Default Instance:</strong> الاسم الافتراضي هو اسم الخادم</li>
+                <li><strong>Named Instance:</strong> اسم مخصص مثل "SQLSERVER2008"</li>
+            </ul>
+
+            <h3>الخطوة 4: إعداد الخدمات (Services)</h3>
+            <p>حدد الحسابات التي ستعمل عليها خدمات SQL Server:</p>
+            <ul>
+                <li><strong>SQL Server Database Engine:</strong> يمكن استخدام حساب النظام أو حساب مخصص</li>
+                <li><strong>SQL Server Agent:</strong> لحساب المهام المجدولة</li>
+            </ul>
+
+            <h3>الخطوة 5: إعداد Authentication Mode</h3>
+            <p>اختر طريقة المصادقة:</p>
+            <ul>
+                <li><strong>Windows Authentication Mode:</strong> استخدام حسابات Windows فقط</li>
+                <li><strong>Mixed Mode:</strong> Windows Authentication + SQL Server Authentication</li>
+            </ul>
+
+            <div class="warning">
+                <strong>تحذير:</strong> إذا اخترت Mixed Mode، يجب تحديد كلمة مرور قوية لـ sa (system administrator).
+            </div>
+
+            <h3>الخطوة 6: إعداد Collation</h3>
+            <p>Collation يحدد كيفية ترتيب ومقارنة النصوص. للعربية، استخدم:</p>
+            <ul>
+                <li><strong>Arabic_CI_AS:</strong> للعربية (Case Insensitive, Accent Sensitive)</li>
+                <li><strong>SQL_Latin1_General_CP1_CI_AS:</strong> الافتراضي</li>
+            </ul>
+
+            <h2>إنشاء أول قاعدة بيانات</h2>
+            <p>بعد التثبيت، يمكنك إنشاء قاعدة بيانات باستخدام SSMS:</p>
+
+            <h3>الطريقة 1: استخدام الواجهة الرسومية</h3>
+            <ol>
+                <li>افتح SQL Server Management Studio</li>
+                <li>اتصل بالخادم</li>
+                <li>انقر بزر الماوس الأيمن على "Databases"</li>
+                <li>اختر "New Database"</li>
+                <li>أدخل اسم قاعدة البيانات</li>
+                <li>انقر "OK"</li>
+            </ol>
+
+            <h3>الطريقة 2: استخدام T-SQL</h3>
+            <div class="code-block">
+<code><span class="keyword">CREATE DATABASE</span> قاعدة_البيانات_الأولى;
+<span class="comment">-- مثال:</span>
+<span class="keyword">CREATE DATABASE</span> MyFirstDB;
+</code>
+            </div>
+
+            <h2>الاتصال بـ SQL Server</h2>
+            <p>للاتصال بـ SQL Server من SSMS:</p>
+            <ol>
+                <li>افتح SQL Server Management Studio</li>
+                <li>في نافذة الاتصال، أدخل:</li>
+                <ul>
+                    <li><strong>Server name:</strong> اسم الخادم أو IP (مثال: localhost أو .)</li>
+                    <li><strong>Authentication:</strong> Windows Authentication أو SQL Server Authentication</li>
+                    <li><strong>User name:</strong> إذا اخترت SQL Server Authentication</li>
+                    <li><strong>Password:</strong> كلمة المرور</li>
+                </ul>
+                <li>انقر "Connect"</li>
+            </ol>
+
+            <h2>التحقق من التثبيت</h2>
+            <p>للتحقق من أن التثبيت تم بنجاح:</p>
+            <div class="code-block">
+<code><span class="comment">-- التحقق من إصدار SQL Server</span>
+<span class="keyword">SELECT</span> @@VERSION;
+
+<span class="comment">-- عرض قواعد البيانات الموجودة</span>
+<span class="keyword">SELECT</span> name <span class="keyword">FROM</span> sys.databases;
+
+<span class="comment">-- عرض معلومات الخادم</span>
+<span class="keyword">SELECT</span> 
+    SERVERPROPERTY('MachineName') <span class="keyword">AS</span> ServerName,
+    SERVERPROPERTY('ProductVersion') <span class="keyword">AS</span> Version,
+    SERVERPROPERTY('ProductLevel') <span class="keyword">AS</span> ProductLevel;
+</code>
+            </div>
+
+            <div class="tip">
+                <strong>نصيحة:</strong> احفظ معلومات الاتصال في SSMS لتسهيل الوصول لاحقاً.
+            </div>
+
+            <h2>تثبيت SQL Server Management Studio</h2>
+            <p>SSMS قد لا يكون مثبتاً مع SQL Server. قم بتثبيته منفصلاً:</p>
+            <ol>
+                <li>حمّل SQL Server Management Studio من موقع Microsoft</li>
+                <li>شغّل ملف التثبيت</li>
+                <li>اتبع خطوات التثبيت</li>
+            </ol>
+
+            <h2>الخلاصة</h2>
+            <ul>
+                <li>تأكد من تلبية متطلبات النظام قبل التثبيت</li>
+                <li>اختر الميزات المناسبة لاحتياجاتك</li>
+                <li>استخدم Mixed Mode إذا كنت بحاجة لـ SQL Server Authentication</li>
+                <li>اختر Collation مناسب للغة العربية</li>
+                <li>ثبت SQL Server Management Studio بشكل منفصل</li>
+            </ul>
+
+            <div class="navigation">
+                <a href="01-introduction.html" class="nav-btn">المحاضرة السابقة</a>
+                <a href="../../index.html" class="nav-btn">العودة للصفحة الرئيسية</a>
+                <a href="03-databases.html" class="nav-btn">المحاضرة التالية: إنشاء وإدارة قواعد البيانات</a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 دورة SQL Server 2008 - م. ياسر المفعلاني</p>
+        </div>
+    </footer>
+</body>
+</html>
+

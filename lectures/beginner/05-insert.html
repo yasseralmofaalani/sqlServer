@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المحاضرة 5: إدراج البيانات (INSERT)</title>
+    <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>المحاضرة 5: إدراج البيانات (INSERT)</h1>
+            <p class="instructor">مقدم الدورة: م. ياسر المفعلاني</p>
+        </div>
+    </header>
+
+    <nav class="main-nav">
+        <div class="container">
+            <ul>
+                <li><a href="../../index.html">الصفحة الرئيسية</a></li>
+                <li><a href="#content">المحتوى</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="lecture-content" id="content">
+            <h2>إدراج سجل واحد</h2>
+            <p>أبسط طريقة لإدراج البيانات هي استخدام INSERT INTO مع VALUES.</p>
+
+            <h3>إدراج جميع الأعمدة</h3>
+            <div class="code-block">
+<code><span class="keyword">INSERT INTO</span> الطلاب
+<span class="keyword">VALUES</span> (1, <span class="string">'أحمد محمد'</span>, 20, <span class="string">'علوم الحاسب'</span>);
+</code>
+            </div>
+
+            <h3>إدراج أعمدة محددة</h3>
+            <div class="code-block">
+<code><span class="keyword">INSERT INTO</span> الطلاب (الاسم, العمر, التخصص)
+<span class="keyword">VALUES</span> (<span class="string">'فاطمة علي'</span>, 21, <span class="string">'الهندسة'</span>);
+<span class="comment">-- رقم_الطالب سيأخذ القيمة التلقائية إذا كان IDENTITY</span>
+</code>
+            </div>
+
+            <h2>إدراج عدة سجلات</h2>
+            <div class="code-block">
+<code><span class="keyword">INSERT INTO</span> الطلاب (الاسم, العمر, التخصص)
+<span class="keyword">VALUES</span>
+    (<span class="string">'محمد خالد'</span>, 22, <span class="string">'الطب'</span>),
+    (<span class="string">'سارة أحمد'</span>, 19, <span class="string">'الصيدلة'</span>),
+    (<span class="string">'خالد يوسف'</span>, 23, <span class="string">'الهندسة'</span>);
+</code>
+            </div>
+
+            <h2>إدراج من جدول آخر</h2>
+            <div class="code-block">
+<code><span class="comment">-- إنشاء جدول للطلاب الجدد</span>
+<span class="keyword">CREATE TABLE</span> الطلاب_الجدد
+(
+    الاسم <span class="keyword">NVARCHAR</span>(50),
+    العمر <span class="keyword">INT</span>,
+    التخصص <span class="keyword">NVARCHAR</span>(50)
+);
+
+<span class="comment">-- إدراج البيانات من جدول آخر</span>
+<span class="keyword">INSERT INTO</span> الطلاب (الاسم, العمر, التخصص)
+<span class="keyword">SELECT</span> الاسم, العمر, التخصص
+<span class="keyword">FROM</span> الطلاب_الجدد;
+</code>
+            </div>
+
+            <h2>إدراج مع SELECT</h2>
+            <div class="code-block">
+<code><span class="comment">-- إدراج بيانات محسوبة</span>
+<span class="keyword">INSERT INTO</span> الطلاب (الاسم, العمر, التخصص)
+<span class="keyword">SELECT</span> 
+    <span class="string">'طالب جديد'</span>,
+    20,
+    <span class="string">'علوم الحاسب'</span>
+<span class="keyword">WHERE NOT EXISTS</span> (
+    <span class="keyword">SELECT</span> 1 <span class="keyword">FROM</span> الطلاب 
+    <span class="keyword">WHERE</span> الاسم = <span class="string">'طالب جديد'</span>
+);
+</code>
+            </div>
+
+            <h2>إدراج مع DEFAULT</h2>
+            <div class="code-block">
+<code><span class="comment">-- استخدام القيم الافتراضية</span>
+<span class="keyword">INSERT INTO</span> الموظفون (الاسم_الكامل, البريد_الإلكتروني)
+<span class="keyword">VALUES</span> (<span class="string">'أحمد محمد'</span>, <span class="string">'ahmed@example.com'</span>);
+<span class="comment">-- تاريخ_التعيين و القسم سيأخذان القيم الافتراضية</span>
+
+<span class="comment">-- استخدام DEFAULT صراحة</span>
+<span class="keyword">INSERT INTO</span> الموظفون (الاسم_الكامل, البريد_الإلكتروني, تاريخ_التعيين)
+<span class="keyword">VALUES</span> (<span class="string">'فاطمة علي'</span>, <span class="string">'fatima@example.com'</span>, <span class="keyword">DEFAULT</span>);
+</code>
+            </div>
+
+            <h2>إدراج مع NULL</h2>
+            <div class="code-block">
+<code><span class="keyword">INSERT INTO</span> الطلاب (الاسم, العمر, التخصص)
+<span class="keyword">VALUES</span> (<span class="string">'محمد'</span>, <span class="keyword">NULL</span>, <span class="string">'الهندسة'</span>);
+<span class="comment">-- العمر سيكون NULL</span>
+</code>
+            </div>
+
+            <h2>مثال شامل</h2>
+            <div class="code-block">
+<code><span class="comment">-- إنشاء جدول الطلاب</span>
+<span class="keyword">CREATE TABLE</span> الطلاب
+(
+    رقم_الطالب <span class="keyword">INT</span> <span class="keyword">IDENTITY</span>(1,1) <span class="keyword">PRIMARY KEY</span>,
+    الاسم <span class="keyword">NVARCHAR</span>(50) <span class="keyword">NOT NULL</span>,
+    العمر <span class="keyword">INT</span>,
+    التخصص <span class="keyword">NVARCHAR</span>(50),
+    تاريخ_التسجيل <span class="keyword">DATETIME</span> <span class="keyword">DEFAULT</span> <span class="function">GETDATE</span>()
+);
+
+<span class="comment">-- إدراج عدة طلاب</span>
+<span class="keyword">INSERT INTO</span> الطلاب (الاسم, العمر, التخصص)
+<span class="keyword">VALUES</span>
+    (<span class="string">'أحمد محمد علي'</span>, 20, <span class="string">'علوم الحاسب'</span>),
+    (<span class="string">'فاطمة خالد'</span>, 21, <span class="string">'الهندسة المدنية'</span>),
+    (<span class="string">'محمد يوسف'</span>, 19, <span class="string">'الطب'</span>),
+    (<span class="string">'سارة أحمد'</span>, 22, <span class="string">'الصيدلة'</span>),
+    (<span class="string">'خالد إبراهيم'</span>, 23, <span class="string">'الهندسة الكهربائية'</span>);
+</code>
+            </div>
+
+            <h2>التحقق من البيانات المدرجة</h2>
+            <div class="code-block">
+<code><span class="comment">-- عرض جميع الطلاب</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> الطلاب;
+
+<span class="comment">-- عرض عدد السجلات</span>
+<span class="keyword">SELECT</span> <span class="function">COUNT</span>(*) <span class="keyword">AS</span> عدد_الطلاب
+<span class="keyword">FROM</span> الطلاب;
+</code>
+            </div>
+
+            <h2>معالجة الأخطاء</h2>
+            <div class="code-block">
+<code><span class="comment">-- استخدام TRY...CATCH</span>
+<span class="keyword">BEGIN TRY</span>
+    <span class="keyword">INSERT INTO</span> الطلاب (الاسم, العمر, التخصص)
+    <span class="keyword">VALUES</span> (<span class="string">'أحمد'</span>, 20, <span class="string">'علوم الحاسب'</span>);
+    <span class="function">PRINT</span> <span class="string">'تم الإدراج بنجاح'</span>;
+<span class="keyword">END TRY</span>
+<span class="keyword">BEGIN CATCH</span>
+    <span class="function">PRINT</span> <span class="string">'حدث خطأ: '</span> + <span class="function">ERROR_MESSAGE</span>();
+<span class="keyword">END CATCH</span>;
+</code>
+            </div>
+
+            <h2>إدراج مع OUTPUT</h2>
+            <p>OUTPUT يسمح بعرض البيانات المدرجة:</p>
+            <div class="code-block">
+<code><span class="keyword">INSERT INTO</span> الطلاب (الاسم, العمر, التخصص)
+<span class="keyword">OUTPUT</span> INSERTED.رقم_الطالب, INSERTED.الاسم
+<span class="keyword">VALUES</span> (<span class="string">'علي حسن'</span>, 24, <span class="string">'الهندسة'</span>);
+</code>
+            </div>
+
+            <h2>أفضل الممارسات</h2>
+            <ul>
+                <li>حدد الأعمدة صراحة عند الإدراج لتجنب الأخطاء</li>
+                <li>استخدم المعاملات (Parameters) في التطبيقات لتجنب SQL Injection</li>
+                <li>تحقق من صحة البيانات قبل الإدراج</li>
+                <li>استخدم TRY...CATCH لمعالجة الأخطاء</li>
+                <li>استخدم OUTPUT للتحقق من البيانات المدرجة</li>
+            </ul>
+
+            <div class="warning">
+                <strong>تحذير:</strong> تأكد من أن البيانات المدرجة تتوافق مع قيود الجدول (Constraints).
+            </div>
+
+            <h2>الخلاصة</h2>
+            <ul>
+                <li>INSERT INTO يستخدم لإدراج البيانات في الجداول</li>
+                <li>يمكن إدراج سجل واحد أو عدة سجلات</li>
+                <li>يمكن إدراج البيانات من جدول آخر باستخدام SELECT</li>
+                <li>استخدم DEFAULT للقيم الافتراضية</li>
+                <li>استخدم TRY...CATCH لمعالجة الأخطاء</li>
+            </ul>
+
+            <div class="navigation">
+                <a href="04-tables.html" class="nav-btn">المحاضرة السابقة</a>
+                <a href="../../index.html" class="nav-btn">العودة للصفحة الرئيسية</a>
+                <a href="06-select.html" class="nav-btn">المحاضرة التالية: استعلام البيانات</a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 دورة SQL Server 2008 - م. ياسر المفعلاني</p>
+        </div>
+    </footer>
+</body>
+</html>
+

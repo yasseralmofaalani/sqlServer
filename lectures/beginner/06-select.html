@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المحاضرة 6: استعلام البيانات (SELECT)</title>
+    <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>المحاضرة 6: استعلام البيانات (SELECT)</h1>
+            <p class="instructor">مقدم الدورة: م. ياسر المفعلاني</p>
+        </div>
+    </header>
+
+    <nav class="main-nav">
+        <div class="container">
+            <ul>
+                <li><a href="../../index.html">الصفحة الرئيسية</a></li>
+                <li><a href="#content">المحتوى</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="lecture-content" id="content">
+            <h2>الاستعلام البسيط</h2>
+            <p>SELECT هو الأمر الأساسي لاسترجاع البيانات من الجداول.</p>
+
+            <h3>استرجاع جميع الأعمدة</h3>
+            <div class="code-block">
+<code><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> الطلاب;
+</code>
+            </div>
+
+            <h3>استرجاع أعمدة محددة</h3>
+            <div class="code-block">
+<code><span class="keyword">SELECT</span> الاسم, العمر, التخصص
+<span class="keyword">FROM</span> الطلاب;
+</code>
+            </div>
+
+            <h2>WHERE - شرط التصفية</h2>
+            <p>WHERE يستخدم لتصفية السجلات حسب شروط معينة.</p>
+
+            <h3>مقارنات بسيطة</h3>
+            <div class="code-block">
+<code><span class="comment">-- العمر يساوي 20</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> الطلاب
+<span class="keyword">WHERE</span> العمر = 20;
+
+<span class="comment">-- العمر أكبر من 20</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> الطلاب
+<span class="keyword">WHERE</span> العمر > 20;
+
+<span class="comment">-- العمر أكبر من أو يساوي 20</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> الطلاب
+<span class="keyword">WHERE</span> العمر >= 20;
+
+<span class="comment">-- العمر أقل من 25</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> الطلاب
+<span class="keyword">WHERE</span> العمر < 25;
+
+<span class="comment">-- العمر لا يساوي 20</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> الطلاب
+<span class="keyword">WHERE</span> العمر <> 20;
+</code>
+            </div>
+
+            <h3>AND و OR</h3>
+            <div class="code-block">
+<code><span class="comment">-- العمر أكبر من 20 والتخصص هو 'علوم الحاسب'</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> الطلاب
+<span class="keyword">WHERE</span> العمر > 20 <span class="keyword">AND</span> التخصص = <span class="string">'علوم الحاسب'</span>;
+
+<span class="comment">-- العمر يساوي 20 أو 21</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> الطلاب
+<span class="keyword">WHERE</span> العمر = 20 <span class="keyword">OR</span> العمر = 21;
+
+<span class="comment">-- العمر بين 20 و 25</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> الطلاب
+<span class="keyword">WHERE</span> العمر >= 20 <span class="keyword">AND</span> العمر <= 25;
+</code>
+            </div>
+
+            <h3>BETWEEN</h3>
+            <div class="code-block">
+<code><span class="comment">-- العمر بين 20 و 25 (شامل)</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> الطلاب
+<span class="keyword">WHERE</span> العمر <span class="keyword">BETWEEN</span> 20 <span class="keyword">AND</span> 25;
+</code>
+            </div>
+
+            <h3>IN</h3>
+            <div class="code-block">
+<code><span class="comment">-- التخصص في قائمة معينة</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> الطلاب
+<span class="keyword">WHERE</span> التخصص <span class="keyword">IN</span> (<span class="string">'علوم الحاسب'</span>, <span class="string">'الهندسة'</span>, <span class="string">'الطب'</span>);
+</code>
+            </div>
+
+            <h3>LIKE - البحث النمطي</h3>
+            <div class="code-block">
+<code><span class="comment">-- الاسم يبدأ بـ 'أحمد'</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> الطلاب
+<span class="keyword">WHERE</span> الاسم <span class="keyword">LIKE</span> <span class="string">'أحمد%'</span>;
+
+<span class="comment">-- الاسم ينتهي بـ 'محمد'</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> الطلاب
+<span class="keyword">WHERE</span> الاسم <span class="keyword">LIKE</span> <span class="string">'%محمد'</span>;
+
+<span class="comment">-- الاسم يحتوي على 'أحمد'</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> الطلاب
+<span class="keyword">WHERE</span> الاسم <span class="keyword">LIKE</span> <span class="string">'%أحمد%'</span>;
+
+<span class="comment">-- الاسم يحتوي على حرف واحد قبل 'حمد'</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> الطلاب
+<span class="keyword">WHERE</span> الاسم <span class="keyword">LIKE</span> <span class="string">'_حمد%'</span>;
+</code>
+            </div>
+
+            <h3>NULL</h3>
+            <div class="code-block">
+<code><span class="comment">-- العمر NULL</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> الطلاب
+<span class="keyword">WHERE</span> العمر <span class="keyword">IS NULL</span>;
+
+<span class="comment">-- العمر ليس NULL</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> الطلاب
+<span class="keyword">WHERE</span> العمر <span class="keyword">IS NOT NULL</span>;
+</code>
+            </div>
+
+            <h2>ORDER BY - الترتيب</h2>
+            <div class="code-block">
+<code><span class="comment">-- ترتيب حسب العمر تصاعدياً</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> الطلاب
+<span class="keyword">ORDER BY</span> العمر <span class="keyword">ASC</span>;
+
+<span class="comment">-- ترتيب حسب العمر تنازلياً</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> الطلاب
+<span class="keyword">ORDER BY</span> العمر <span class="keyword">DESC</span>;
+
+<span class="comment">-- ترتيب حسب عدة أعمدة</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> الطلاب
+<span class="keyword">ORDER BY</span> التخصص <span class="keyword">ASC</span>, العمر <span class="keyword">DESC</span>;
+</code>
+            </div>
+
+            <h2>SELECT DISTINCT - القيم الفريدة</h2>
+            <div class="code-block">
+<code><span class="comment">-- عرض التخصصات الفريدة فقط</span>
+<span class="keyword">SELECT DISTINCT</span> التخصص
+<span class="keyword">FROM</span> الطلاب;
+</code>
+            </div>
+
+            <h2>TOP - عدد محدد من السجلات</h2>
+            <div class="code-block">
+<code><span class="comment">-- أول 5 طلاب</span>
+<span class="keyword">SELECT TOP</span> 5 *
+<span class="keyword">FROM</span> الطلاب
+<span class="keyword">ORDER BY</span> رقم_الطالب;
+
+<span class="comment">-- أول 10% من السجلات</span>
+<span class="keyword">SELECT TOP</span> 10 <span class="keyword">PERCENT</span> *
+<span class="keyword">FROM</span> الطلاب;
+</code>
+            </div>
+
+            <h2>AS - الأسماء المستعارة</h2>
+            <div class="code-block">
+<code><span class="comment">-- استخدام AS لتسمية الأعمدة</span>
+<span class="keyword">SELECT</span> 
+    الاسم <span class="keyword">AS</span> اسم_الطالب,
+    العمر <span class="keyword">AS</span> عمر_الطالب,
+    التخصص <span class="keyword">AS</span> تخصص_الطالب
+<span class="keyword">FROM</span> الطلاب;
+</code>
+            </div>
+
+            <h2>الحسابات في SELECT</h2>
+            <div class="code-block">
+<code><span class="comment">-- حساب عمود جديد</span>
+<span class="keyword">SELECT</span> 
+    الاسم,
+    العمر,
+    العمر + 5 <span class="keyword">AS</span> العمر_بعد_5_سنوات
+<span class="keyword">FROM</span> الطلاب;
+</code>
+            </div>
+
+            <h2>مثال شامل</h2>
+            <div class="code-block">
+<code><span class="comment">-- استعلام معقد</span>
+<span class="keyword">SELECT TOP</span> 10
+    رقم_الطالب,
+    الاسم <span class="keyword">AS</span> اسم_الطالب,
+    العمر,
+    التخصص
+<span class="keyword">FROM</span> الطلاب
+<span class="keyword">WHERE</span> العمر <span class="keyword">BETWEEN</span> 20 <span class="keyword">AND</span> 25
+    <span class="keyword">AND</span> التخصص <span class="keyword">IN</span> (<span class="string">'علوم الحاسب'</span>, <span class="string">'الهندسة'</span>)
+    <span class="keyword">AND</span> الاسم <span class="keyword">LIKE</span> <span class="string">'أ%'</span>
+<span class="keyword">ORDER BY</span> العمر <span class="keyword">DESC</span>, الاسم <span class="keyword">ASC</span>;
+</code>
+            </div>
+
+            <h2>أفضل الممارسات</h2>
+            <ul>
+                <li>تجنب استخدام SELECT * في الإنتاج، حدد الأعمدة المطلوبة</li>
+                <li>استخدم WHERE لتصفية البيانات قبل الترتيب</li>
+                <li>استخدم INDEXED columns في WHERE لتحسين الأداء</li>
+                <li>استخدم AS لتسمية واضحة للأعمدة</li>
+                <li>استخدم TOP لتحديد عدد السجلات المطلوبة</li>
+            </ul>
+
+            <div class="tip">
+                <strong>نصيحة:</strong> استخدم WHERE قبل ORDER BY لتحسين الأداء.
+            </div>
+
+            <h2>الخلاصة</h2>
+            <ul>
+                <li>SELECT يستخدم لاسترجاع البيانات</li>
+                <li>WHERE لتصفية السجلات</li>
+                <li>ORDER BY لترتيب النتائج</li>
+                <li>DISTINCT للحصول على قيم فريدة</li>
+                <li>TOP لتحديد عدد السجلات</li>
+            </ul>
+
+            <div class="navigation">
+                <a href="05-insert.html" class="nav-btn">المحاضرة السابقة</a>
+                <a href="../../index.html" class="nav-btn">العودة للصفحة الرئيسية</a>
+                <a href="07-update.html" class="nav-btn">المحاضرة التالية: تحديث البيانات</a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 دورة SQL Server 2008 - م. ياسر المفعلاني</p>
+        </div>
+    </footer>
+</body>
+</html>
+
