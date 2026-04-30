@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المحاضرة 17: استخدام Geography Data Type - متقدم</title>
+    <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>المحاضرة 17: استخدام Geography Data Type - متقدم</h1>
+            <p class="instructor">مقدم الدورة: م. ياسر المفعلاني</p>
+        </div>
+    </header>
+
+    <nav class="main-nav">
+        <div class="container">
+            <ul>
+                <li><a href="../../index.html">الصفحة الرئيسية</a></li>
+                <li><a href="#content">المحتوى</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="lecture-content" id="content">
+            <h2>نظرة شاملة على Geography Data Type</h2>
+            <p>Geography Data Type في SQL Server 2008 يدعم البيانات الجغرافية على سطح الكرة الأرضية باستخدام نظام إحداثيات إهليلجي (Ellipsoidal). هذا النوع مثالي للتطبيقات التي تحتاج إلى حسابات دقيقة للمسافات والمساحات على سطح الأرض.</p>
+
+            <h2>أنظمة الإحداثيات (Coordinate Reference Systems)</h2>
+            
+            <h3>SRID - Spatial Reference Identifier</h3>
+            <p>كل كائن Geography يجب أن يكون له SRID يحدد نظام الإحداثيات المستخدم. أشهر SRIDs:</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>SRID</th>
+                        <th>النظام</th>
+                        <th>الوصف</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>4326</td>
+                        <td>WGS 84</td>
+                        <td>النظام العالمي الأكثر استخداماً (GPS)</td>
+                    </tr>
+                    <tr>
+                        <td>4269</td>
+                        <td>NAD83</td>
+                        <td>نظام أمريكا الشمالية</td>
+                    </tr>
+                    <tr>
+                        <td>3857</td>
+                        <td>Web Mercator</td>
+                        <td>يستخدم في Google Maps و Bing Maps</td>
+                    </tr>
+                    <tr>
+                        <td>32636</td>
+                        <td>UTM Zone 36N</td>
+                        <td>للمنطقة الشرقية من مصر</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>إنشاء Point جغرافي</h3>
+            <div class="code-block">
+<code><span class="comment">-- إنشاء نقطة باستخدام WGS84 (SRID 4326)</span>
+<span class="keyword">DECLARE</span> @cairo <span class="keyword">GEOGRAPHY</span>;
+<span class="keyword">SET</span> @cairo = <span class="function">geography::Point</span>(31.2357, 30.0444, 4326);
+<span class="comment">-- المعاملات: خط الطول (Longitude)، خط العرض (Latitude)، SRID</span>
+
+<span class="comment">-- عرض الإحداثيات</span>
+<span class="keyword">SELECT</span> 
+    @cairo.Lat <span class="keyword">AS</span> خط_العرض,
+    @cairo.Long <span class="keyword">AS</span> خط_الطول,
+    @cairo.STSrid <span class="keyword">AS</span> SRID;
+</code>
+            </div>
+
+            <div class="note">
+                <strong>ملاحظة مهمة:</strong> في Geography، المعامل الأول هو خط الطول (Longitude) والثاني هو خط العرض (Latitude). الترتيب عكسي في بعض الأنظمة الأخرى.
+            </div>
+
+            <h2>إنشاء LineString جغرافي</h2>
+            <p>LineString يمثل خطاً يتكون من عدة نقاط متصلة.</p>
+            <div class="code-block">
+<code><span class="comment">-- إنشاء خط من القاهرة إلى الإسكندرية</span>
+<span class="keyword">DECLARE</span> @route <span class="keyword">GEOGRAPHY</span>;
+<span class="keyword">SET</span> @route = <span class="function">geography::STLineFromText</span>(
+    <span class="string">'LINESTRING(31.2357 30.0444, 29.9158 31.2001)'</span>, 
+    4326
+);
+
+<span class="comment">-- حساب طول الخط بالكيلومتر</span>
+<span class="keyword">SELECT</span> @route.STLength() / 1000 <span class="keyword">AS</span> الطول_بالكيلومتر;
+</code>
+            </div>
+
+            <h2>إنشاء Polygon جغرافي</h2>
+            <p>Polygon يمثل منطقة مغلقة. يجب أن تكون النقطة الأولى والأخيرة متطابقتين.</p>
+            <div class="code-block">
+<code><span class="comment">-- إنشاء مضلع يمثل منطقة في القاهرة</span>
+<span class="keyword">DECLARE</span> @area <span class="keyword">GEOGRAPHY</span>;
+<span class="keyword">SET</span> @area = <span class="function">geography::STPolyFromText</span>(
+    <span class="string">'POLYGON((31.2 30.0, 31.3 30.0, 31.3 30.1, 31.2 30.1, 31.2 30.0))'</span>, 
+    4326
+);
+
+<span class="comment">-- حساب المساحة بالمتر المربع</span>
+<span class="keyword">SELECT</span> @area.STArea() <span class="keyword">AS</span> المساحة_بالمتر_المربع;
+
+<span class="comment">-- حساب المساحة بالكيلومتر المربع</span>
+<span class="keyword">SELECT</span> @area.STArea() / 1000000 <span class="keyword">AS</span> المساحة_بالكيلومتر_المربع;
+</code>
+            </div>
+
+            <h2>حساب المسافة بين نقطتين</h2>
+            <p>STDistance يحسب المسافة بين كائنين جغرافيين بالمتر.</p>
+            <div class="code-block">
+<code><span class="comment">-- المسافة بين القاهرة والإسكندرية</span>
+<span class="keyword">DECLARE</span> @cairo <span class="keyword">GEOGRAPHY</span> = <span class="function">geography::Point</span>(31.2357, 30.0444, 4326);
+<span class="keyword">DECLARE</span> @alexandria <span class="keyword">GEOGRAPHY</span> = <span class="function">geography::Point</span>(29.9158, 31.2001, 4326);
+
+<span class="comment">-- المسافة بالمتر</span>
+<span class="keyword">SELECT</span> @cairo.STDistance(@alexandria) <span class="keyword">AS</span> المسافة_بالمتر;
+
+<span class="comment">-- المسافة بالكيلومتر</span>
+<span class="keyword">SELECT</span> @cairo.STDistance(@alexandria) / 1000 <span class="keyword">AS</span> المسافة_بالكيلومتر;
+
+<span class="comment">-- المسافة بالميل</span>
+<span class="keyword">SELECT</span> @cairo.STDistance(@alexandria) / 1609.34 <span class="keyword">AS</span> المسافة_بالميل;
+</code>
+            </div>
+
+            <h2>إنشاء جدول للمواقع الجغرافية</h2>
+            <div class="code-block">
+<code><span class="keyword">CREATE TABLE</span> المدن
+(
+    رقم_المدينة <span class="keyword">INT</span> <span class="keyword">PRIMARY KEY</span> <span class="keyword">IDENTITY</span>(1,1),
+    اسم_المدينة <span class="keyword">NVARCHAR</span>(100) <span class="keyword">NOT NULL</span>,
+    الموقع <span class="keyword">GEOGRAPHY</span> <span class="keyword">NOT NULL</span>,
+    عدد_السكان <span class="keyword">INT</span>,
+    تاريخ_التأسيس <span class="keyword">DATE</span>
+);
+
+<span class="comment">-- إدراج بيانات</span>
+<span class="keyword">INSERT INTO</span> المدن (اسم_المدينة, الموقع, عدد_السكان)
+<span class="keyword">VALUES</span>
+    (<span class="string">'القاهرة'</span>, <span class="function">geography::Point</span>(31.2357, 30.0444, 4326), 9500000),
+    (<span class="string">'الإسكندرية'</span>, <span class="function">geography::Point</span>(29.9158, 31.2001, 4326), 5200000),
+    (<span class="string">'الجيزة'</span>, <span class="function">geography::Point</span>(31.2089, 30.0131, 4326), 3200000),
+    (<span class="string">'شبرا الخيمة'</span>, <span class="function">geography::Point</span>(31.2406, 30.1285, 4326), 1200000),
+    (<span class="string">'بورسعيد'</span>, <span class="function">geography::Point</span>(32.3078, 31.2654, 4326), 750000);
+</code>
+            </div>
+
+            <h2>البحث عن المدن القريبة</h2>
+            <div class="code-block">
+<code><span class="comment">-- البحث عن جميع المدن في نطاق 100 كيلومتر من القاهرة</span>
+<span class="keyword">DECLARE</span> @myLocation <span class="keyword">GEOGRAPHY</span> = <span class="function">geography::Point</span>(31.2357, 30.0444, 4326);
+
+<span class="keyword">SELECT</span> 
+    اسم_المدينة,
+    الموقع.Lat <span class="keyword">AS</span> خط_العرض,
+    الموقع.Long <span class="keyword">AS</span> خط_الطول,
+    الموقع.STDistance(@myLocation) / 1000 <span class="keyword">AS</span> المسافة_بالكيلومتر,
+    عدد_السكان
+<span class="keyword">FROM</span> المدن
+<span class="keyword">WHERE</span> الموقع.STDistance(@myLocation) <= 100000
+    <span class="keyword">AND</span> الموقع.STSrid = 4326
+<span class="keyword">ORDER BY</span> الموقع.STDistance(@myLocation);
+</code>
+            </div>
+
+            <h2>التحقق من صحة البيانات الجغرافية</h2>
+            <div class="code-block">
+<code><span class="comment">-- التحقق من صحة الكائن الجغرافي</span>
+<span class="keyword">DECLARE</span> @point <span class="keyword">GEOGRAPHY</span> = <span class="function">geography::Point</span>(31.2357, 30.0444, 4326);
+
+<span class="keyword">SELECT</span> 
+    @point.STIsValid() <span class="keyword">AS</span> صحيح,
+    @point.STIsValidDetailed() <span class="keyword">AS</span> تفاصيل_الصحة;
+
+<span class="comment">-- إصلاح كائن غير صحيح</span>
+<span class="keyword">DECLARE</span> @invalid <span class="keyword">GEOGRAPHY</span>;
+<span class="keyword">SET</span> @invalid = <span class="function">geography::STGeomFromText</span>(<span class="string">'POINT(200 100)'</span>, 4326);
+<span class="comment">-- هذا غير صحيح لأن خط الطول يجب أن يكون بين -180 و 180</span>
+
+<span class="keyword">IF</span> @invalid.STIsValid() = 0
+<span class="keyword">BEGIN</span>
+    <span class="keyword">SET</span> @invalid = @invalid.MakeValid();
+<span class="keyword">END</span>;
+</code>
+            </div>
+
+            <h2>تحويل SRID</h2>
+            <p>يمكن تحويل البيانات من SRID إلى آخر، لكن SQL Server 2008 لا يدعم هذا مباشرة. يجب استخدام مكتبات خارجية أو تحديث SQL Server.</p>
+
+            <h2>استخدام MultiPoint</h2>
+            <div class="code-block">
+<code><span class="comment">-- إنشاء MultiPoint (عدة نقاط)</span>
+<span class="keyword">DECLARE</span> @points <span class="keyword">GEOGRAPHY</span>;
+<span class="keyword">SET</span> @points = <span class="function">geography::STGeomFromText</span>(
+    <span class="string">'MULTIPOINT((31.2357 30.0444), (29.9158 31.2001), (31.2089 30.0131))'</span>, 
+    4326
+);
+
+<span class="comment">-- عدد النقاط</span>
+<span class="keyword">SELECT</span> @points.STNumGeometries() <span class="keyword">AS</span> عدد_النقاط;
+</code>
+            </div>
+
+            <h2>استخدام MultiPolygon</h2>
+            <div class="code-block">
+<code><span class="comment">-- إنشاء MultiPolygon (عدة مناطق)</span>
+<span class="keyword">DECLARE</span> @regions <span class="keyword">GEOGRAPHY</span>;
+<span class="keyword">SET</span> @regions = <span class="function">geography::STGeomFromText</span>(
+    <span class="string">'MULTIPOLYGON(((31.2 30.0, 31.3 30.0, 31.3 30.1, 31.2 30.1, 31.2 30.0)), ((31.4 30.2, 31.5 30.2, 31.5 30.3, 31.4 30.3, 31.4 30.2)))'</span>, 
+    4326
+);
+
+<span class="comment">-- المساحة الإجمالية</span>
+<span class="keyword">SELECT</span> @regions.STArea() / 1000000 <span class="keyword">AS</span> المساحة_بالكيلومتر_المربع;
+</code>
+            </div>
+
+            <h2>أفضل الممارسات</h2>
+            <ul>
+                <li>استخدم SRID 4326 (WGS84) كمعيار عالمي</li>
+                <li>تأكد من صحة البيانات الجغرافية قبل الإدراج</li>
+                <li>استخدم Spatial Indexes لتحسين الأداء</li>
+                <li>تأكد من أن جميع الكائنات في نفس SRID عند إجراء العمليات</li>
+                <li>استخدم STDistance بحذر - قد يكون بطيئاً على البيانات الكبيرة</li>
+                <li>فكر في استخدام Geometry للبيانات المحلية الصغيرة</li>
+            </ul>
+
+            <div class="tip">
+                <strong>نصيحة:</strong> للمسافات القصيرة (أقل من 100 كم)، يمكن استخدام Geometry بدلاً من Geography للحصول على أداء أفضل.
+            </div>
+
+            <h2>الخلاصة</h2>
+            <ul>
+                <li>Geography مناسب للبيانات على سطح الكرة الأرضية</li>
+                <li>SRID يحدد نظام الإحداثيات</li>
+                <li>STDistance يحسب المسافات الدقيقة على سطح الأرض</li>
+                <li>STArea يحسب المساحات الدقيقة</li>
+                <li>تأكد من صحة البيانات قبل الاستخدام</li>
+            </ul>
+
+            <div class="navigation">
+                <a href="../intermediate/16-geometry.html" class="nav-btn">المحاضرة السابقة</a>
+                <a href="../../index.html" class="nav-btn">العودة للصفحة الرئيسية</a>
+                <a href="18-spatial-functions.html" class="nav-btn">المحاضرة التالية: دوال Spatial المتقدمة</a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 دورة SQL Server 2008 - م. ياسر المفعلاني</p>
+        </div>
+    </footer>
+</body>
+</html>
