@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المحاضرة 15: مقدمة في قواعد البيانات الجغرافية</title>
+    <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>المحاضرة 15: مقدمة في قواعد البيانات الجغرافية</h1>
+            <p class="instructor">مقدم الدورة: م. ياسر المفعلاني</p>
+        </div>
+    </header>
+
+    <nav class="main-nav">
+        <div class="container">
+            <ul>
+                <li><a href="../../index.html">الصفحة الرئيسية</a></li>
+                <li><a href="#content">المحتوى</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="lecture-content" id="content">
+            <h2>ما هي البيانات الجغرافية؟</h2>
+            <p>البيانات الجغرافية (Spatial Data) هي بيانات تمثل المواقع والأشكال الجغرافية على سطح الأرض.</p>
+
+            <h2>Spatial Data Types في SQL Server 2008</h2>
+            <p>SQL Server 2008 يدعم نوعين رئيسيين:</p>
+            <ul>
+                <li><strong>Geometry:</strong> للبيانات في المستوى الإقليدي (Flat/Euclidean)</li>
+                <li><strong>Geography:</strong> للبيانات على سطح الكرة الأرضية (Ellipsoidal)</li>
+            </ul>
+
+            <h2>Geometry Data Type</h2>
+            <p>يستخدم للبيانات في نظام إحداثيات مسطح مثل الخرائط.</p>
+            <div class="code-block">
+<code><span class="keyword">CREATE TABLE</span> المواقع
+(
+    رقم_الموقع <span class="keyword">INT</span> <span class="keyword">PRIMARY KEY</span>,
+    اسم_الموقع <span class="keyword">NVARCHAR</span>(100),
+    الموقع <span class="keyword">GEOMETRY</span>
+);
+</code>
+            </div>
+
+            <h2>Geography Data Type</h2>
+            <p>يستخدم للبيانات على سطح الكرة الأرضية مع نظام إحداثيات جغرافي.</p>
+            <div class="code-block">
+<code><span class="keyword">CREATE TABLE</span> المواقع_الجغرافية
+(
+    رقم_الموقع <span class="keyword">INT</span> <span class="keyword">PRIMARY KEY</span>,
+    اسم_الموقع <span class="keyword">NVARCHAR</span>(100),
+    الموقع <span class="keyword">GEOGRAPHY</span>
+);
+</code>
+            </div>
+
+            <h2>أنواع البيانات المكانية</h2>
+            <ul>
+                <li><strong>Point:</strong> نقطة واحدة (خط الطول، خط العرض)</li>
+                <li><strong>LineString:</strong> خط يتكون من عدة نقاط</li>
+                <li><strong>Polygon:</strong> مضلع مغلق</li>
+                <li><strong>MultiPoint:</strong> عدة نقاط</li>
+                <li><strong>MultiLineString:</strong> عدة خطوط</li>
+                <li><strong>MultiPolygon:</strong> عدة مضلعات</li>
+            </ul>
+
+            <h2>إنشاء Point</h2>
+            <div class="code-block">
+<code><span class="comment">-- إنشاء نقطة (Geometry)</span>
+<span class="keyword">DECLARE</span> @point <span class="keyword">GEOMETRY</span>;
+<span class="keyword">SET</span> @point = <span class="function">geometry::STPointFromText</span>(<span class="string">'POINT(100 200)'</span>, 0);
+
+<span class="comment">-- إنشاء نقطة (Geography) - خط الطول، خط العرض</span>
+<span class="keyword">DECLARE</span> @geoPoint <span class="keyword">GEOGRAPHY</span>;
+<span class="keyword">SET</span> @geoPoint = <span class="function">geography::Point</span>(31.2, 29.9, 4326);
+<span class="comment">-- 31.2 خط الطول، 29.9 خط العرض، 4326 هو SRID (WGS84)</span>
+</code>
+            </div>
+
+            <h2>إدراج بيانات جغرافية</h2>
+            <div class="code-block">
+<code><span class="keyword">INSERT INTO</span> المواقع_الجغرافية (رقم_الموقع, اسم_الموقع, الموقع)
+<span class="keyword">VALUES</span> (
+    1,
+    <span class="string">'القاهرة'</span>,
+    <span class="function">geography::Point</span>(31.2357, 30.0444, 4326)
+);
+</code>
+            </div>
+
+            <h2>الخلاصة</h2>
+            <ul>
+                <li>Geometry للبيانات المسطحة</li>
+                <li>Geography للبيانات على سطح الكرة الأرضية</li>
+                <li>Point يمثل موقعاً واحداً</li>
+                <li>LineString يمثل خطاً</li>
+                <li>Polygon يمثل منطقة</li>
+            </ul>
+
+            <div class="navigation">
+                <a href="14-functions.html" class="nav-btn">المحاضرة السابقة</a>
+                <a href="../../index.html" class="nav-btn">العودة للصفحة الرئيسية</a>
+                <a href="16-geometry.html" class="nav-btn">المحاضرة التالية: استخدام Geometry</a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 دورة SQL Server 2008 - م. ياسر المفعلاني</p>
+        </div>
+    </footer>
+</body>
+</html>
+

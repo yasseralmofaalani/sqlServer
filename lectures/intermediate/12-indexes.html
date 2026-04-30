@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المحاضرة 12: الفهارس</title>
+    <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>المحاضرة 12: الفهارس (Indexes)</h1>
+            <p class="instructor">مقدم الدورة: م. ياسر المفعلاني</p>
+        </div>
+    </header>
+
+    <nav class="main-nav">
+        <div class="container">
+            <ul>
+                <li><a href="../../index.html">الصفحة الرئيسية</a></li>
+                <li><a href="#content">المحتوى</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="lecture-content" id="content">
+            <h2>ما هي الفهارس؟</h2>
+            <p>الفهارس تحسن أداء الاستعلامات عن طريق تسريع البحث في الجداول.</p>
+
+            <h2>إنشاء Index</h2>
+            <div class="code-block">
+<code><span class="keyword">CREATE INDEX</span> IX_Students_Name
+<span class="keyword">ON</span> الطلاب(الاسم);
+
+<span class="comment">-- Index مركب</span>
+<span class="keyword">CREATE INDEX</span> IX_Students_Specialty_Age
+<span class="keyword">ON</span> الطلاب(التخصص, العمر);
+</code>
+            </div>
+
+            <h2>Unique Index</h2>
+            <div class="code-block">
+<code><span class="keyword">CREATE UNIQUE INDEX</span> IX_Students_Email
+<span class="keyword">ON</span> الطلاب(البريد_الإلكتروني);
+</code>
+            </div>
+
+            <h2>حذف Index</h2>
+            <div class="code-block">
+<code><span class="keyword">DROP INDEX</span> IX_Students_Name <span class="keyword">ON</span> الطلاب;
+</code>
+            </div>
+
+            <div class="navigation">
+                <a href="11-aggregate.html" class="nav-btn">المحاضرة السابقة</a>
+                <a href="../../index.html" class="nav-btn">العودة للصفحة الرئيسية</a>
+                <a href="13-stored-procedures.html" class="nav-btn">المحاضرة التالية</a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 دورة SQL Server 2008 - م. ياسر المفعلاني</p>
+        </div>
+    </footer>
+</body>
+</html>
+

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المحاضرة 16: استخدام Geometry Data Type</title>
+    <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>المحاضرة 16: استخدام Geometry Data Type</h1>
+            <p class="instructor">مقدم الدورة: م. ياسر المفعلاني</p>
+        </div>
+    </header>
+
+    <nav class="main-nav">
+        <div class="container">
+            <ul>
+                <li><a href="../../index.html">الصفحة الرئيسية</a></li>
+                <li><a href="#content">المحتوى</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="lecture-content" id="content">
+            <h2>إنشاء Point</h2>
+            <div class="code-block">
+<code><span class="keyword">DECLARE</span> @point <span class="keyword">GEOMETRY</span>;
+<span class="keyword">SET</span> @point = <span class="function">geometry::STPointFromText</span>(<span class="string">'POINT(100 200)'</span>, 0);
+<span class="keyword">SELECT</span> @point;
+</code>
+            </div>
+
+            <h2>إنشاء LineString</h2>
+            <div class="code-block">
+<code><span class="keyword">DECLARE</span> @line <span class="keyword">GEOMETRY</span>;
+<span class="keyword">SET</span> @line = <span class="function">geometry::STLineFromText</span>(
+    <span class="string">'LINESTRING(0 0, 100 100, 200 200)'</span>, 
+    0
+);
+</code>
+            </div>
+
+            <h2>إنشاء Polygon</h2>
+            <div class="code-block">
+<code><span class="keyword">DECLARE</span> @polygon <span class="keyword">GEOMETRY</span>;
+<span class="keyword">SET</span> @polygon = <span class="function">geometry::STPolyFromText</span>(
+    <span class="string">'POLYGON((0 0, 100 0, 100 100, 0 100, 0 0))'</span>, 
+    0
+);
+</code>
+            </div>
+
+            <h2>الدوال الأساسية</h2>
+            <div class="code-block">
+<code><span class="comment">-- STX و STY للحصول على الإحداثيات</span>
+<span class="keyword">SELECT</span> 
+    @point.STX <span class="keyword">AS</span> X,
+    @point.STY <span class="keyword">AS</span> Y;
+
+<span class="comment">-- STLength للحصول على الطول</span>
+<span class="keyword">SELECT</span> @line.STLength() <span class="keyword">AS</span> الطول;
+
+<span class="comment">-- STArea للحصول على المساحة</span>
+<span class="keyword">SELECT</span> @polygon.STArea() <span class="keyword">AS</span> المساحة;
+</code>
+            </div>
+
+            <h2>الخلاصة</h2>
+            <ul>
+                <li>Geometry للبيانات المسطحة</li>
+                <li>Point, LineString, Polygon هي الأنواع الأساسية</li>
+                <li>استخدم الدوال المدمجة للعمليات</li>
+            </ul>
+
+            <div class="navigation">
+                <a href="15-spatial-intro.html" class="nav-btn">المحاضرة السابقة</a>
+                <a href="../../index.html" class="nav-btn">العودة للصفحة الرئيسية</a>
+                <a href="../advanced/17-geography.html" class="nav-btn">المحاضرة التالية: Geography</a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 دورة SQL Server 2008 - م. ياسر المفعلاني</p>
+        </div>
+    </footer>
+</body>
+</html>
+

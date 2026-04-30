@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المحاضرة 10: JOIN - ربط الجداول</title>
+    <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>المحاضرة 10: JOIN - ربط الجداول</h1>
+            <p class="instructor">مقدم الدورة: م. ياسر المفعلاني</p>
+        </div>
+    </header>
+
+    <nav class="main-nav">
+        <div class="container">
+            <ul>
+                <li><a href="../../index.html">الصفحة الرئيسية</a></li>
+                <li><a href="#content">المحتوى</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="lecture-content" id="content">
+            <h2>ما هو JOIN؟</h2>
+            <p>JOIN يستخدم لربط البيانات من جدولين أو أكثر بناءً على علاقة بينهما.</p>
+
+            <h2>INNER JOIN</h2>
+            <p>يرجع فقط السجلات التي لها تطابق في كلا الجدولين.</p>
+            <div class="code-block">
+<code><span class="keyword">SELECT</span> ط.رقم_الطالب, ط.الاسم, ت.رقم_المادة, ت.الدرجة
+<span class="keyword">FROM</span> الطلاب ط
+<span class="keyword">INNER JOIN</span> التسجيلات ت
+    <span class="keyword">ON</span> ط.رقم_الطالب = ت.رقم_الطالب;
+</code>
+            </div>
+
+            <h2>LEFT JOIN (LEFT OUTER JOIN)</h2>
+            <p>يرجع جميع السجلات من الجدول الأيسر والسجلات المطابقة من الجدول الأيمن.</p>
+            <div class="code-block">
+<code><span class="keyword">SELECT</span> ط.رقم_الطالب, ط.الاسم, ت.رقم_المادة
+<span class="keyword">FROM</span> الطلاب ط
+<span class="keyword">LEFT JOIN</span> التسجيلات ت
+    <span class="keyword">ON</span> ط.رقم_الطالب = ت.رقم_الطالب;
+<span class="comment">-- يعرض جميع الطلاب حتى لو لم يكن لديهم تسجيلات</span>
+</code>
+            </div>
+
+            <h2>RIGHT JOIN (RIGHT OUTER JOIN)</h2>
+            <p>يرجع جميع السجلات من الجدول الأيمن والسجلات المطابقة من الجدول الأيسر.</p>
+            <div class="code-block">
+<code><span class="keyword">SELECT</span> ط.رقم_الطالب, ط.الاسم, ت.رقم_المادة
+<span class="keyword">FROM</span> الطلاب ط
+<span class="keyword">RIGHT JOIN</span> التسجيلات ت
+    <span class="keyword">ON</span> ط.رقم_الطالب = ت.رقم_الطالب;
+</code>
+            </div>
+
+            <h2>FULL OUTER JOIN</h2>
+            <p>يرجع جميع السجلات من كلا الجدولين.</p>
+            <div class="code-block">
+<code><span class="keyword">SELECT</span> ط.رقم_الطالب, ط.الاسم, ت.رقم_المادة
+<span class="keyword">FROM</span> الطلاب ط
+<span class="keyword">FULL OUTER JOIN</span> التسجيلات ت
+    <span class="keyword">ON</span> ط.رقم_الطالب = ت.رقم_الطالب;
+</code>
+            </div>
+
+            <h2>ربط عدة جداول</h2>
+            <div class="code-block">
+<code><span class="keyword">SELECT</span> 
+    ط.الاسم <span class="keyword">AS</span> اسم_الطالب,
+    م.اسم_المادة,
+    ت.الدرجة
+<span class="keyword">FROM</span> الطلاب ط
+<span class="keyword">INNER JOIN</span> التسجيلات ت
+    <span class="keyword">ON</span> ط.رقم_الطالب = ت.رقم_الطالب
+<span class="keyword">INNER JOIN</span> المواد م
+    <span class="keyword">ON</span> ت.رقم_المادة = م.رقم_المادة;
+</code>
+            </div>
+
+            <h2>الخلاصة</h2>
+            <ul>
+                <li>INNER JOIN: السجلات المطابقة فقط</li>
+                <li>LEFT JOIN: جميع السجلات من الجدول الأيسر</li>
+                <li>RIGHT JOIN: جميع السجلات من الجدول الأيمن</li>
+                <li>FULL OUTER JOIN: جميع السجلات من كلا الجدولين</li>
+            </ul>
+
+            <div class="navigation">
+                <a href="09-relationships.html" class="nav-btn">المحاضرة السابقة</a>
+                <a href="../../index.html" class="nav-btn">العودة للصفحة الرئيسية</a>
+                <a href="11-aggregate.html" class="nav-btn">المحاضرة التالية</a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 دورة SQL Server 2008 - م. ياسر المفعلاني</p>
+        </div>
+    </footer>
+</body>
+</html>
+
