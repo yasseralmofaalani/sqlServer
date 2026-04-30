@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المحاضرة 21: الربط مع QGIS</title>
+    <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>المحاضرة 21: الربط مع QGIS</h1>
+            <p class="instructor">مقدم الدورة: م. ياسر المفعلاني</p>
+        </div>
+    </header>
+
+    <nav class="main-nav">
+        <div class="container">
+            <ul>
+                <li><a href="../../index.html">الصفحة الرئيسية</a></li>
+                <li><a href="#content">المحتوى</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="lecture-content" id="content">
+            <h2>مقدمة عن QGIS</h2>
+            <p>QGIS (Quantum GIS) هو نظام معلومات جغرافي مفتوح المصدر ومجاني. يمكن ربط QGIS مع SQL Server لاستخدام البيانات الجغرافية المخزنة في SQL Server.</p>
+
+            <h2>متطلبات الربط</h2>
+            <ul>
+                <li>QGIS 3.0 أو أحدث</li>
+                <li>SQL Server 2008 أو أحدث</li>
+                <li>ODBC Driver for SQL Server</li>
+                <li>صلاحيات الوصول إلى قاعدة البيانات</li>
+            </ul>
+
+            <h2>إعداد ODBC Connection</h2>
+            <h3>في Windows:</h3>
+            <ol>
+                <li>افتح "ODBC Data Source Administrator"</li>
+                <li>اختر "System DSN" أو "User DSN"</li>
+                <li>انقر "Add"</li>
+                <li>اختر "SQL Server Native Client"</li>
+                <li>أدخل اسم الاتصال ومعلومات الخادم</li>
+                <li>اختر قاعدة البيانات</li>
+                <li>اختبر الاتصال</li>
+            </ol>
+
+            <h2>إضافة طبقة من SQL Server في QGIS</h2>
+            <h3>الطريقة 1: استخدام Add Vector Layer</h3>
+            <ol>
+                <li>افتح QGIS</li>
+                <li>اذهب إلى "Layer" → "Add Layer" → "Add Vector Layer"</li>
+                <li>اختر "Database"</li>
+                <li>انقر "New" لإنشاء اتصال جديد</li>
+                <li>اختر "MSSQL Spatial"</li>
+                <li>أدخل معلومات الاتصال:
+                    <ul>
+                        <li>Service: اسم الخادم</li>
+                        <li>Database: اسم قاعدة البيانات</li>
+                        <li>Username: اسم المستخدم</li>
+                        <li>Password: كلمة المرور</li>
+                    </ul>
+                </li>
+                <li>انقر "OK"</li>
+                <li>اختر الجدول المطلوب</li>
+            </ol>
+
+            <h3>الطريقة 2: استخدام Browser Panel</h3>
+            <ol>
+                <li>في QGIS، افتح "Browser Panel"</li>
+                <li>انقر بزر الماوس الأيمن على "MSSQL"</li>
+                <li>اختر "New Connection"</li>
+                <li>أدخل معلومات الاتصال</li>
+                <li>اسحب الجدول إلى الخريطة</li>
+            </ol>
+
+            <h2>استيراد البيانات إلى SQL Server من QGIS</h2>
+            <div class="code-block">
+<code><span class="comment">-- في QGIS، استخدم DB Manager:</span>
+<span class="comment">-- 1. Database → DB Manager</span>
+<span class="comment">-- 2. اختر الاتصال</span>
+<span class="comment">-- 3. Import Layer/File</span>
+<span class="comment">-- 4. اختر الملف أو الطبقة</span>
+<span class="comment">-- 5. حدد الجدول الهدف</span>
+<span class="comment">-- 6. انقر "OK"</span>
+</code>
+            </div>
+
+            <h2>تصدير البيانات من SQL Server إلى QGIS</h2>
+            <p>يمكن تصدير البيانات مباشرة:</p>
+            <ol>
+                <li>افتح الطبقة من SQL Server في QGIS</li>
+                <li>انقر بزر الماوس الأيمن على الطبقة</li>
+                <li>اختر "Export" → "Save Features As"</li>
+                <li>اختر الصيغة المطلوبة (Shapefile, GeoJSON, etc.)</li>
+                <li>حدد الموقع واسم الملف</li>
+                <li>انقر "OK"</li>
+            </ol>
+
+            <h2>استخدام SQL Queries في QGIS</h2>
+            <p>يمكن تنفيذ استعلامات SQL مباشرة:</p>
+            <ol>
+                <li>افتح "DB Manager"</li>
+                <li>اختر الاتصال</li>
+                <li>اذهب إلى "SQL Window"</li>
+                <li>اكتب الاستعلام</li>
+                <li>انقر "Execute"</li>
+            </ol>
+
+            <div class="code-block">
+<code><span class="comment">-- مثال استعلام في QGIS</span>
+<span class="keyword">SELECT</span> 
+    اسم_الموقع,
+    Shape,
+    عدد_السكان
+<span class="keyword">FROM</span> المواقع
+<span class="keyword">WHERE</span> عدد_السكان > 1000000;
+</code>
+            </div>
+
+            <h2>إنشاء Views في QGIS</h2>
+            <p>يمكن إنشاء Views من QGIS:</p>
+            <div class="code-block">
+<code><span class="comment">-- في DB Manager → SQL Window</span>
+<span class="keyword">CREATE VIEW</span> المدن_الكبيرة
+<span class="keyword">AS</span>
+<span class="keyword">SELECT</span> *
+<span class="keyword">FROM</span> المواقع
+<span class="keyword">WHERE</span> عدد_السكان > 1000000;
+</code>
+            </div>
+
+            <h2>استخدام Plugins</h2>
+            <p>هناك عدة Plugins مفيدة للربط مع SQL Server:</p>
+            <ul>
+                <li><strong>MSSQL Spatial:</strong> للربط المباشر مع SQL Server</li>
+                <li><strong>DB Manager:</strong> لإدارة قواعد البيانات</li>
+                <li><strong>QuickMapServices:</strong> لإضافة خرائط أساسية</li>
+            </ul>
+
+            <h2>أفضل الممارسات</h2>
+            <ul>
+                <li>استخدم ODBC Connection للربط</li>
+                <li>تأكد من أن البيانات الجغرافية في SRID 4326</li>
+                <li>استخدم Spatial Indexes لتحسين الأداء</li>
+                <li>احفظ الاتصالات للاستخدام المستقبلي</li>
+                <li>استخدم Views لتبسيط البيانات المعقدة</li>
+            </ul>
+
+            <div class="tip">
+                <strong>نصيحة:</strong> استخدم "Filter" في QGIS لتصفية البيانات قبل عرضها على الخريطة لتحسين الأداء.
+            </div>
+
+            <h2>استكشاف الأخطاء</h2>
+            <ul>
+                <li>تأكد من تثبيت ODBC Driver</li>
+                <li>تحقق من معلومات الاتصال</li>
+                <li>تأكد من صلاحيات المستخدم</li>
+                <li>تحقق من أن عمود البيانات الجغرافية موجود</li>
+                <li>راجع Log Messages في QGIS</li>
+            </ul>
+
+            <h2>الخلاصة</h2>
+            <ul>
+                <li>QGIS يمكنه الاتصال مع SQL Server عبر ODBC</li>
+                <li>يمكن استيراد وتصدير البيانات بسهولة</li>
+                <li>DB Manager يوفر واجهة لإدارة قاعدة البيانات</li>
+                <li>يمكن تنفيذ استعلامات SQL مباشرة</li>
+                <li>QGIS مجاني ومفتوح المصدر</li>
+            </ul>
+
+            <div class="navigation">
+                <a href="20-arcgis-integration.html" class="nav-btn">المحاضرة السابقة</a>
+                <a href="../../index.html" class="nav-btn">العودة للصفحة الرئيسية</a>
+                <a href="22-import-export.html" class="nav-btn">المحاضرة التالية: استيراد وتصدير البيانات</a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 دورة SQL Server 2008 - م. ياسر المفعلاني</p>
+        </div>
+    </footer>
+</body>
+</html>
+

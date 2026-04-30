@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المحاضرة 21: Views</title>
+    <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>المحاضرة 21: Views - العروض</h1>
+            <p class="instructor">مقدم الدورة: م. ياسر المفعلاني</p>
+        </div>
+    </header>
+
+    <nav class="main-nav">
+        <div class="container">
+            <ul>
+                <li><a href="../../index.html">الصفحة الرئيسية</a></li>
+                <li><a href="#content">المحتوى</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="lecture-content" id="content">
+            <h2>إنشاء View</h2>
+            <div class="code-block">
+<code><span class="keyword">CREATE VIEW</span> VW_Students_Details
+<span class="keyword">AS</span>
+<span class="keyword">SELECT</span> 
+    ط.رقم_الطالب,
+    ط.الاسم,
+    ت.رقم_المادة,
+    ت.الدرجة
+<span class="keyword">FROM</span> الطلاب ط
+<span class="keyword">INNER JOIN</span> التسجيلات ت
+    <span class="keyword">ON</span> ط.رقم_الطالب = ت.رقم_الطالب;
+</code>
+            </div>
+
+            <h2>استخدام View</h2>
+            <div class="code-block">
+<code><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> VW_Students_Details;
+</code>
+            </div>
+
+            <div class="navigation">
+                <a href="20-triggers.html" class="nav-btn">المحاضرة السابقة</a>
+                <a href="../../index.html" class="nav-btn">العودة للصفحة الرئيسية</a>
+                <a href="22-performance.html" class="nav-btn">المحاضرة التالية</a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 دورة SQL Server 2008 - م. ياسر المفعلاني</p>
+        </div>
+    </footer>
+</body>
+</html>
+

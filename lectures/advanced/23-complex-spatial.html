@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المحاضرة 23: معالجة البيانات الجغرافية المعقدة</title>
+    <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>المحاضرة 23: معالجة البيانات الجغرافية المعقدة</h1>
+            <p class="instructor">مقدم الدورة: م. ياسر المفعلاني</p>
+        </div>
+    </header>
+
+    <nav class="main-nav">
+        <div class="container">
+            <ul>
+                <li><a href="../../index.html">الصفحة الرئيسية</a></li>
+                <li><a href="#content">المحتوى</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="lecture-content" id="content">
+            <h2>المضلعات المعقدة</h2>
+            <p>المضلعات المعقدة قد تحتوي على ثقوب (Holes) أو عدة أجزاء.</p>
+            <div class="code-block">
+<code><span class="comment">-- مضلع بثقب (Polygon with Hole)</span>
+<span class="keyword">DECLARE</span> @polygonWithHole <span class="keyword">GEOGRAPHY</span> = <span class="function">geography::STGeomFromText</span>(
+    <span class="string">'POLYGON((31.2 30.0, 31.3 30.0, 31.3 30.1, 31.2 30.1, 31.2 30.0), (31.22 30.02, 31.22 30.08, 31.28 30.08, 31.28 30.02, 31.22 30.02))'</span>, 
+    4326
+);
+<span class="comment">-- الجزء الأول هو الحد الخارجي، الجزء الثاني هو الثقب</span>
+</code>
+            </div>
+
+            <h2>MultiPolygon</h2>
+            <div class="code-block">
+<code><span class="keyword">DECLARE</span> @multiPolygon <span class="keyword">GEOGRAPHY</span> = <span class="function">geography::STGeomFromText</span>(
+    <span class="string">'MULTIPOLYGON(((31.2 30.0, 31.3 30.0, 31.3 30.1, 31.2 30.1, 31.2 30.0)), ((31.4 30.2, 31.5 30.2, 31.5 30.3, 31.4 30.3, 31.4 30.2)))'</span>, 
+    4326
+);
+
+<span class="comment">-- عدد المضلعات</span>
+<span class="keyword">SELECT</span> @multiPolygon.STNumGeometries() <span class="keyword">AS</span> عدد_المضلعات;
+
+<span class="comment">-- الحصول على مضلع محدد</span>
+<span class="keyword">SELECT</span> @multiPolygon.STGeometryN(1) <span class="keyword">AS</span> المضلع_الأول;
+</code>
+            </div>
+
+            <h2>Union - دمج المناطق</h2>
+            <div class="code-block">
+<code><span class="keyword">DECLARE</span> @region1 <span class="keyword">GEOGRAPHY</span> = <span class="function">geography::STPolyFromText</span>(
+    <span class="string">'POLYGON((31.2 30.0, 31.3 30.0, 31.3 30.1, 31.2 30.1, 31.2 30.0))'</span>, 
+    4326
+);
+<span class="keyword">DECLARE</span> @region2 <span class="keyword">GEOGRAPHY</span> = <span class="function">geography::STPolyFromText</span>(
+    <span class="string">'POLYGON((31.25 30.05, 31.35 30.05, 31.35 30.15, 31.25 30.15, 31.25 30.05))'</span>, 
+    4326
+);
+
+<span class="comment">-- دمج المنطقتين</span>
+<span class="keyword">DECLARE</span> @union <span class="keyword">GEOGRAPHY</span> = @region1.STUnion(@region2);
+<span class="keyword">SELECT</span> @union.STArea() / 1000000 <span class="keyword">AS</span> المساحة_المجمعة;
+</code>
+            </div>
+
+            <h2>Intersection - التقاطع</h2>
+            <div class="code-block">
+<code><span class="comment">-- المنطقة المشتركة بين منطقتين</span>
+<span class="keyword">DECLARE</span> @intersection <span class="keyword">GEOGRAPHY</span> = @region1.STIntersection(@region2);
+<span class="keyword">SELECT</span> @intersection.STArea() / 1000000 <span class="keyword">AS</span> مساحة_التقاطع;
+</code>
+            </div>
+
+            <h2>Difference - الفرق</h2>
+            <div class="code-block">
+<code><span class="comment">-- المنطقة في region1 وليست في region2</span>
+<span class="keyword">DECLARE</span> @difference <span class="keyword">GEOGRAPHY</span> = @region1.STDifference(@region2);
+<span class="keyword">SELECT</span> @difference.STArea() / 1000000 <span class="keyword">AS</span> مساحة_الفرق;
+</code>
+            </div>
+
+            <h2>SymDifference - الفرق المتماثل</h2>
+            <div class="code-block">
+<code><span class="comment">-- المناطق في region1 أو region2 وليست في كليهما</span>
+<span class="keyword">DECLARE</span> @symDiff <span class="keyword">GEOGRAPHY</span> = @region1.STSymDifference(@region2);
+</code>
+            </div>
+
+            <h2>الخلاصة</h2>
+            <ul>
+                <li>المضلعات المعقدة قد تحتوي على ثقوب</li>
+                <li>MultiPolygon يحتوي على عدة مضلعات</li>
+                <li>STUnion لدمج المناطق</li>
+                <li>STIntersection للتقاطع</li>
+                <li>STDifference للفرق</li>
+            </ul>
+
+            <div class="navigation">
+                <a href="22-import-export.html" class="nav-btn">المحاضرة السابقة</a>
+                <a href="../../index.html" class="nav-btn">العودة للصفحة الرئيسية</a>
+                <a href="24-ogc-standards.html" class="nav-btn">المحاضرة التالية</a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 دورة SQL Server 2008 - م. ياسر المفعلاني</p>
+        </div>
+    </footer>
+</body>
+</html>
+

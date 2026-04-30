@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المحاضرة 29: مشروع متكامل - نظام GIS متقدم</title>
+    <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>المحاضرة 29: مشروع متكامل - نظام GIS متقدم</h1>
+            <p class="instructor">مقدم الدورة: م. ياسر المفعلاني</p>
+        </div>
+    </header>
+
+    <nav class="main-nav">
+        <div class="container">
+            <ul>
+                <li><a href="../../index.html">الصفحة الرئيسية</a></li>
+                <li><a href="#content">المحتوى</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="lecture-content" id="content">
+            <h2>مشروع نظام GIS متكامل</h2>
+            <p>في هذا المشروع سنقوم بإنشاء نظام GIS كامل يربط SQL Server مع برامج GIS.</p>
+
+            <h2>إنشاء قاعدة البيانات</h2>
+            <div class="code-block">
+<code><span class="keyword">CREATE DATABASE</span> AdvancedGIS_System;
+<span class="keyword">USE</span> AdvancedGIS_System;
+
+<span class="comment">-- جدول المدن</span>
+<span class="keyword">CREATE TABLE</span> المدن
+(
+    ObjectID <span class="keyword">INT</span> <span class="keyword">IDENTITY</span>(1,1) <span class="keyword">PRIMARY KEY</span>,
+    اسم_المدينة <span class="keyword">NVARCHAR</span>(100) <span class="keyword">NOT NULL</span>,
+    Shape <span class="keyword">GEOGRAPHY</span> <span class="keyword">NOT NULL</span>,
+    عدد_السكان <span class="keyword">INT</span>,
+    تاريخ_التأسيس <span class="keyword">DATE</span>
+);
+
+<span class="comment">-- جدول المناطق</span>
+<span class="keyword">CREATE TABLE</span> المناطق
+(
+    ObjectID <span class="keyword">INT</span> <span class="keyword">IDENTITY</span>(1,1) <span class="keyword">PRIMARY KEY</span>,
+    اسم_المنطقة <span class="keyword">NVARCHAR</span>(100) <span class="keyword">NOT NULL</span>,
+    Shape <span class="keyword">GEOGRAPHY</span> <span class="keyword">NOT NULL</span>,
+    المساحة <span class="keyword">DECIMAL</span>(10,2)
+);
+
+<span class="comment">-- Spatial Indexes</span>
+<span class="keyword">CREATE SPATIAL INDEX</span> SIX_Cities
+<span class="keyword">ON</span> المدن(Shape)
+<span class="keyword">USING GEOGRAPHY_GRID</span>
+<span class="keyword">WITH</span> (
+    GRIDS = (LEVEL_1 = MEDIUM, LEVEL_2 = MEDIUM, LEVEL_3 = MEDIUM, LEVEL_4 = MEDIUM),
+    CELLS_PER_OBJECT = 16
+);
+
+<span class="keyword">CREATE SPATIAL INDEX</span> SIX_Regions
+<span class="keyword">ON</span> المناطق(Shape)
+<span class="keyword">USING GEOGRAPHY_GRID</span>
+<span class="keyword">WITH</span> (
+    GRIDS = (LEVEL_1 = MEDIUM, LEVEL_2 = MEDIUM, LEVEL_3 = MEDIUM, LEVEL_4 = MEDIUM),
+    CELLS_PER_OBJECT = 16
+);
+</code>
+            </div>
+
+            <h2>الربط مع ArcGIS و QGIS</h2>
+            <p>يمكن الآن ربط هذه القاعدة مع ArcGIS و QGIS كما شرحنا في المحاضرات السابقة.</p>
+
+            <h2>الخلاصة</h2>
+            <p>تم إنشاء نظام GIS متكامل يمكن ربطه مع برامج GIS المختلفة.</p>
+
+            <div class="navigation">
+                <a href="28-spatial-security.html" class="nav-btn">المحاضرة السابقة</a>
+                <a href="../../index.html" class="nav-btn">العودة للصفحة الرئيسية</a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 دورة SQL Server 2008 - م. ياسر المفعلاني</p>
+        </div>
+    </footer>
+</body>
+</html>
+

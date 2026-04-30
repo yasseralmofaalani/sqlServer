@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المحاضرة 24: مشروع متكامل - نظام GIS</title>
+    <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>المحاضرة 24: مشروع متكامل - نظام GIS</h1>
+            <p class="instructor">مقدم الدورة: م. ياسر المفعلاني</p>
+        </div>
+    </header>
+
+    <nav class="main-nav">
+        <div class="container">
+            <ul>
+                <li><a href="../../index.html">الصفحة الرئيسية</a></li>
+                <li><a href="#content">المحتوى</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="lecture-content" id="content">
+            <h2>إنشاء قاعدة بيانات GIS</h2>
+            <div class="code-block">
+<code><span class="keyword">CREATE DATABASE</span> GIS_System;
+<span class="keyword">USE</span> GIS_System;
+
+<span class="comment">-- جدول المدن</span>
+<span class="keyword">CREATE TABLE</span> المدن
+(
+    رقم_المدينة <span class="keyword">INT</span> <span class="keyword">PRIMARY KEY</span> <span class="keyword">IDENTITY</span>(1,1),
+    اسم_المدينة <span class="keyword">NVARCHAR</span>(100) <span class="keyword">NOT NULL</span>,
+    الموقع <span class="keyword">GEOGRAPHY</span> <span class="keyword">NOT NULL</span>,
+    عدد_السكان <span class="keyword">INT</span>
+);
+
+<span class="comment">-- جدول المناطق</span>
+<span class="keyword">CREATE TABLE</span> المناطق
+(
+    رقم_المنطقة <span class="keyword">INT</span> <span class="keyword">PRIMARY KEY</span> <span class="keyword">IDENTITY</span>(1,1),
+    اسم_المنطقة <span class="keyword">NVARCHAR</span>(100) <span class="keyword">NOT NULL</span>,
+    الحدود <span class="keyword">GEOGRAPHY</span> <span class="keyword">NOT NULL</span>,
+    المساحة <span class="keyword">DECIMAL</span>(10,2)
+);
+
+<span class="comment">-- إنشاء Spatial Index</span>
+<span class="keyword">CREATE SPATIAL INDEX</span> SIX_Cities_Location
+<span class="keyword">ON</span> المدن(الموقع)
+<span class="keyword">USING GEOGRAPHY_GRID</span>
+<span class="keyword">WITH</span> (
+    GRIDS = (LEVEL_1 = MEDIUM, LEVEL_2 = MEDIUM, LEVEL_3 = MEDIUM, LEVEL_4 = MEDIUM),
+    CELLS_PER_OBJECT = 16
+);
+</code>
+            </div>
+
+            <h2>إدراج بيانات جغرافية</h2>
+            <div class="code-block">
+<code><span class="keyword">INSERT INTO</span> المدن (اسم_المدينة, الموقع, عدد_السكان)
+<span class="keyword">VALUES</span>
+    (<span class="string">'القاهرة'</span>, <span class="function">geography::Point</span>(31.2357, 30.0444, 4326), 9500000),
+    (<span class="string">'الإسكندرية'</span>, <span class="function">geography::Point</span>(29.9158, 31.2001, 4326), 5200000),
+    (<span class="string">'الجيزة'</span>, <span class="function">geography::Point</span>(31.2089, 30.0131, 4326), 3200000);
+</code>
+            </div>
+
+            <h2>استعلامات جغرافية</h2>
+            <div class="code-block">
+<code><span class="comment">-- البحث عن المدن القريبة</span>
+<span class="keyword">DECLARE</span> @myLocation <span class="keyword">GEOGRAPHY</span> = <span class="function">geography::Point</span>(31.2357, 30.0444, 4326);
+
+<span class="keyword">SELECT</span> 
+    اسم_المدينة,
+    الموقع.STDistance(@myLocation) / 1000 <span class="keyword">AS</span> المسافة_بالكيلومتر,
+    عدد_السكان
+<span class="keyword">FROM</span> المدن
+<span class="keyword">WHERE</span> الموقع.STDistance(@myLocation) <= 100000
+<span class="keyword">ORDER BY</span> الموقع.STDistance(@myLocation);
+</code>
+            </div>
+
+            <h2>الخلاصة</h2>
+            <p>تم إنشاء نظام GIS متكامل يستخدم Spatial Data Types في SQL Server 2008.</p>
+
+            <div class="navigation">
+                <a href="23-security.html" class="nav-btn">المحاضرة السابقة</a>
+                <a href="../../index.html" class="nav-btn">العودة للصفحة الرئيسية</a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 دورة SQL Server 2008 - م. ياسر المفعلاني</p>
+        </div>
+    </footer>
+</body>
+</html>
+

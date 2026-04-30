@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المحاضرة 20: Triggers</title>
+    <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>المحاضرة 20: Triggers - المشغلات</h1>
+            <p class="instructor">مقدم الدورة: م. ياسر المفعلاني</p>
+        </div>
+    </header>
+
+    <nav class="main-nav">
+        <div class="container">
+            <ul>
+                <li><a href="../../index.html">الصفحة الرئيسية</a></li>
+                <li><a href="#content">المحتوى</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="lecture-content" id="content">
+            <h2>إنشاء Trigger</h2>
+            <div class="code-block">
+<code><span class="keyword">CREATE TRIGGER</span> TR_Students_Update
+<span class="keyword">ON</span> الطلاب
+<span class="keyword">AFTER UPDATE</span>
+<span class="keyword">AS</span>
+<span class="keyword">BEGIN</span>
+    <span class="function">PRINT</span> <span class="string">'تم تحديث بيانات طالب'</span>;
+<span class="keyword">END</span>;
+</code>
+            </div>
+
+            <h2>استخدام INSERTED و DELETED</h2>
+            <div class="code-block">
+<code><span class="keyword">CREATE TRIGGER</span> TR_Students_Log
+<span class="keyword">ON</span> الطلاب
+<span class="keyword">AFTER INSERT</span>
+<span class="keyword">AS</span>
+<span class="keyword">BEGIN</span>
+    <span class="keyword">INSERT INTO</span> سجل_التغييرات (رقم_الطالب, العملية, التاريخ)
+    <span class="keyword">SELECT</span> رقم_الطالب, <span class="string">'إدراج'</span>, <span class="function">GETDATE</span>()
+    <span class="keyword">FROM</span> INSERTED;
+<span class="keyword">END</span>;
+</code>
+            </div>
+
+            <div class="navigation">
+                <a href="19-spatial-indexes.html" class="nav-btn">المحاضرة السابقة</a>
+                <a href="../../index.html" class="nav-btn">العودة للصفحة الرئيسية</a>
+                <a href="21-views.html" class="nav-btn">المحاضرة التالية</a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 دورة SQL Server 2008 - م. ياسر المفعلاني</p>
+        </div>
+    </footer>
+</body>
+</html>
+

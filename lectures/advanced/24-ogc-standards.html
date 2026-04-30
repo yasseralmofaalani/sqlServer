@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المحاضرة 24: OGC Standards والمعايير الجغرافية</title>
+    <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>المحاضرة 24: OGC Standards والمعايير الجغرافية</h1>
+            <p class="instructor">مقدم الدورة: م. ياسر المفعلاني</p>
+        </div>
+    </header>
+
+    <nav class="main-nav">
+        <div class="container">
+            <ul>
+                <li><a href="../../index.html">الصفحة الرئيسية</a></li>
+                <li><a href="#content">المحتوى</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="lecture-content" id="content">
+            <h2>ما هو OGC؟</h2>
+            <p>Open Geospatial Consortium (OGC) هو منظمة دولية تضع معايير للبيانات والخدمات الجغرافية. SQL Server 2008 يتبع معايير OGC.</p>
+
+            <h2>WKT - Well-Known Text</h2>
+            <div class="code-block">
+<code><span class="comment">-- تحويل إلى WKT</span>
+<span class="keyword">SELECT</span> Shape.STAsText() <span class="keyword">AS</span> WKT <span class="keyword">FROM</span> المواقع;
+
+<span class="comment">-- إنشاء من WKT</span>
+<span class="keyword">DECLARE</span> @wkt <span class="keyword">NVARCHAR</span>(MAX) = <span class="string">'POINT(31.2357 30.0444)'</span>;
+<span class="keyword">DECLARE</span> @geo <span class="keyword">GEOGRAPHY</span> = <span class="function">geography::STGeomFromText</span>(@wkt, 4326);
+</code>
+            </div>
+
+            <h2>WKB - Well-Known Binary</h2>
+            <div class="code-block">
+<code><span class="comment">-- تحويل إلى WKB</span>
+<span class="keyword">SELECT</span> Shape.STAsBinary() <span class="keyword">AS</span> WKB <span class="keyword">FROM</span> المواقع;
+</code>
+            </div>
+
+            <h2>الخلاصة</h2>
+            <ul>
+                <li>OGC يضع معايير للبيانات الجغرافية</li>
+                <li>WKT و WKB هما معياران أساسيان</li>
+                <li>SQL Server يتبع معايير OGC</li>
+            </ul>
+
+            <div class="navigation">
+                <a href="23-complex-spatial.html" class="nav-btn">المحاضرة السابقة</a>
+                <a href="../../index.html" class="nav-btn">العودة للصفحة الرئيسية</a>
+                <a href="25-spatial-performance.html" class="nav-btn">المحاضرة التالية</a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 دورة SQL Server 2008 - م. ياسر المفعلاني</p>
+        </div>
+    </footer>
+</body>
+</html>
+

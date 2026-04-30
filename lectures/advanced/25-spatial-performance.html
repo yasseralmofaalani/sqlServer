@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المحاضرة 25: تحسين الأداء للبيانات الجغرافية</title>
+    <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>المحاضرة 25: تحسين الأداء للبيانات الجغرافية</h1>
+            <p class="instructor">مقدم الدورة: م. ياسر المفعلاني</p>
+        </div>
+    </header>
+
+    <nav class="main-nav">
+        <div class="container">
+            <ul>
+                <li><a href="../../index.html">الصفحة الرئيسية</a></li>
+                <li><a href="#content">المحتوى</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="lecture-content" id="content">
+            <h2>استخدام Spatial Indexes</h2>
+            <p>الفهارس المكانية ضرورية لتحسين أداء استعلامات البيانات الجغرافية.</p>
+            <div class="code-block">
+<code><span class="keyword">CREATE SPATIAL INDEX</span> SIX_Location
+<span class="keyword">ON</span> المواقع(Shape)
+<span class="keyword">USING GEOGRAPHY_GRID</span>
+<span class="keyword">WITH</span> (
+    GRIDS = (LEVEL_1 = MEDIUM, LEVEL_2 = MEDIUM, LEVEL_3 = MEDIUM, LEVEL_4 = MEDIUM),
+    CELLS_PER_OBJECT = 16
+);
+</code>
+            </div>
+
+            <h2>تحسين استعلامات STDistance</h2>
+            <div class="code-block">
+<code><span class="comment">-- استخدم Spatial Index مع STDistance</span>
+<span class="keyword">DECLARE</span> @point <span class="keyword">GEOGRAPHY</span> = <span class="function">geography::Point</span>(31.2357, 30.0444, 4326);
+<span class="keyword">DECLARE</span> @radius <span class="keyword">FLOAT</span> = 10000;
+
+<span class="keyword">SELECT</span> *
+<span class="keyword">FROM</span> المواقع <span class="keyword">WITH</span> (INDEX(SIX_Location))
+<span class="keyword">WHERE</span> Shape.STDistance(@point) <= @radius;
+</code>
+            </div>
+
+            <h2>الخلاصة</h2>
+            <ul>
+                <li>استخدم Spatial Indexes دائماً</li>
+                <li>استخدم WITH (INDEX) لتوجيه الاستعلام</li>
+                <li>راقب خطط التنفيذ</li>
+            </ul>
+
+            <div class="navigation">
+                <a href="24-ogc-standards.html" class="nav-btn">المحاضرة السابقة</a>
+                <a href="../../index.html" class="nav-btn">العودة للصفحة الرئيسية</a>
+                <a href="26-spatial-triggers.html" class="nav-btn">المحاضرة التالية</a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 دورة SQL Server 2008 - م. ياسر المفعلاني</p>
+        </div>
+    </footer>
+</body>
+</html>
+

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المحاضرة 20: الربط مع ArcGIS</title>
+    <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>المحاضرة 20: الربط مع ArcGIS</h1>
+            <p class="instructor">مقدم الدورة: م. ياسر المفعلاني</p>
+        </div>
+    </header>
+
+    <nav class="main-nav">
+        <div class="container">
+            <ul>
+                <li><a href="../../index.html">الصفحة الرئيسية</a></li>
+                <li><a href="#content">المحتوى</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="lecture-content" id="content">
+            <h2>مقدمة عن ArcGIS</h2>
+            <p>ArcGIS هو نظام معلومات جغرافي متكامل من شركة Esri. يمكن ربط SQL Server مع ArcGIS لاستخدام البيانات الجغرافية المخزنة في SQL Server مباشرة في ArcGIS Desktop و ArcGIS Server.</p>
+
+            <h2>متطلبات الربط</h2>
+            <ul>
+                <li>SQL Server 2008 أو أحدث مع دعم Spatial Data Types</li>
+                <li>ArcGIS Desktop 10.0 أو أحدث</li>
+                <li>SQL Server Native Client</li>
+                <li>صلاحيات الوصول إلى قاعدة البيانات</li>
+            </ul>
+
+            <h2>إعداد قاعدة البيانات في SQL Server</h2>
+            <p>قبل الربط مع ArcGIS، يجب إعداد قاعدة البيانات بشكل صحيح:</p>
+            <div class="code-block">
+<code><span class="comment">-- إنشاء قاعدة بيانات للربط مع ArcGIS</span>
+<span class="keyword">CREATE DATABASE</span> GIS_Database;
+<span class="keyword">USE</span> GIS_Database;
+
+<span class="comment">-- إنشاء جدول ببيانات جغرافية</span>
+<span class="keyword">CREATE TABLE</span> المواقع
+(
+    ObjectID <span class="keyword">INT</span> <span class="keyword">IDENTITY</span>(1,1) <span class="keyword">PRIMARY KEY</span>,
+    اسم_الموقع <span class="keyword">NVARCHAR</span>(100) <span class="keyword">NOT NULL</span>,
+    Shape <span class="keyword">GEOGRAPHY</span> <span class="keyword">NOT NULL</span>,
+    الوصف <span class="keyword">NVARCHAR</span>(500),
+    تاريخ_الإضافة <span class="keyword">DATETIME</span> <span class="keyword">DEFAULT</span> <span class="function">GETDATE</span>()
+);
+
+<span class="comment">-- إنشاء Spatial Index</span>
+<span class="keyword">CREATE SPATIAL INDEX</span> SIX_Shape
+<span class="keyword">ON</span> المواقع(Shape)
+<span class="keyword">USING GEOGRAPHY_GRID</span>
+<span class="keyword">WITH</span> (
+    GRIDS = (LEVEL_1 = MEDIUM, LEVEL_2 = MEDIUM, LEVEL_3 = MEDIUM, LEVEL_4 = MEDIUM),
+    CELLS_PER_OBJECT = 16
+);
+</code>
+            </div>
+
+            <div class="note">
+                <strong>ملاحظة:</strong> ArcGIS يتوقع عمود اسمه "Shape" للبيانات الجغرافية. يمكن استخدام أسماء أخرى لكن يتطلب إعدادات إضافية.
+            </div>
+
+            <h2>إضافة البيانات من ArcGIS</h2>
+            <h3>الطريقة 1: استخدام ArcCatalog</h3>
+            <ol>
+                <li>افتح ArcCatalog</li>
+                <li>انتقل إلى "Database Connections"</li>
+                <li>انقر "Add Database Connection"</li>
+                <li>أدخل معلومات الاتصال:
+                    <ul>
+                        <li>Database Platform: SQL Server</li>
+                        <li>Instance: اسم الخادم</li>
+                        <li>Authentication Type: Database authentication أو Operating system authentication</li>
+                        <li>Database: GIS_Database</li>
+                    </ul>
+                </li>
+                <li>انقر "OK" للاتصال</li>
+                <li>اسحب الجدول من قاعدة البيانات إلى الخريطة</li>
+            </ol>
+
+            <h3>الطريقة 2: استخدام ArcMap</h3>
+            <ol>
+                <li>افتح ArcMap</li>
+                <li>انقر "Add Data"</li>
+                <li>اختر "Database Connections"</li>
+                <li>أنشئ اتصال جديد أو استخدم اتصال موجود</li>
+                <li>اختر الجدول المطلوب</li>
+            </ol>
+
+            <h2>تصدير البيانات من ArcGIS إلى SQL Server</h2>
+            <div class="code-block">
+<code><span class="comment">-- في ArcGIS، استخدم Feature Class to Feature Class</span>
+<span class="comment">-- أو استخدم Python Script:</span>
+
+<span class="comment"># مثال Python في ArcGIS</span>
+<span class="comment"># import arcpy</span>
+<span class="comment"># arcpy.FeatureClassToFeatureClass_conversion(</span>
+<span class="comment">#     "C:/data/points.shp",</span>
+<span class="comment">#     "Database Connections/Connection to SQL Server.sde",</span>
+<span class="comment">#     "المواقع"</span>
+<span class="comment"># )</span>
+</code>
+            </div>
+
+            <h2>استيراد البيانات من SQL Server إلى ArcGIS</h2>
+            <p>يمكن استيراد البيانات مباشرة من SQL Server:</p>
+            <ol>
+                <li>في ArcMap، انقر "Add Data"</li>
+                <li>اختر "Database Connections"</li>
+                <li>اتصل بقاعدة البيانات</li>
+                <li>اختر الجدول الذي يحتوي على عمود Geography</li>
+                <li>سيتم عرض البيانات على الخريطة تلقائياً</li>
+            </ol>
+
+            <h2>استخدام ArcGIS Server</h2>
+            <p>لنشر البيانات الجغرافية من SQL Server كخدمة:</p>
+            <ol>
+                <li>أنشئ اتصال قاعدة بيانات في ArcGIS Server</li>
+                <li>أنشئ Map Service يشير إلى البيانات في SQL Server</li>
+                <li>انشر الخدمة</li>
+                <li>يمكن الوصول للخدمة من تطبيقات الويب والجوال</li>
+            </ol>
+
+            <h2>مزامنة البيانات</h2>
+            <p>يمكن استخدام Replication في SQL Server لمزامنة البيانات بين SQL Server و ArcGIS:</p>
+            <div class="code-block">
+<code><span class="comment">-- إعداد Replication</span>
+<span class="keyword">EXEC</span> sp_addpublication 
+    @publication = <span class="string">'GIS_Publication'</span>,
+    @description = <span class="string">'Publication for GIS data'</span>,
+    @sync_method = <span class="string">'native'</span>;
+</code>
+            </div>
+
+            <h2>أفضل الممارسات</h2>
+            <ul>
+                <li>استخدم عمود اسمه "Shape" للبيانات الجغرافية</li>
+                <li>تأكد من وجود Spatial Index</li>
+                <li>استخدم SRID 4326 (WGS84) كمعيار</li>
+                <li>تأكد من صحة البيانات الجغرافية</li>
+                <li>استخدم ObjectID كـ Primary Key</li>
+                <li>احتفظ بنسخ احتياطية منتظمة</li>
+            </ul>
+
+            <div class="warning">
+                <strong>تحذير:</strong> تأكد من أن جميع البيانات الجغرافية في نفس SRID قبل الربط مع ArcGIS.
+            </div>
+
+            <h2>استكشاف الأخطاء</h2>
+            <ul>
+                <li>تأكد من أن SQL Server Native Client مثبت</li>
+                <li>تحقق من صلاحيات المستخدم</li>
+                <li>تأكد من أن عمود Shape موجود وصحيح</li>
+                <li>تحقق من SRID - يجب أن يكون 4326 أو متوافق</li>
+                <li>راجع Event Viewer في Windows للأخطاء</li>
+            </ul>
+
+            <h2>الخلاصة</h2>
+            <ul>
+                <li>ArcGIS يمكنه الاتصال مباشرة بـ SQL Server</li>
+                <li>استخدم عمود "Shape" للبيانات الجغرافية</li>
+                <li>تأكد من وجود Spatial Index</li>
+                <li>يمكن استيراد وتصدير البيانات بسهولة</li>
+                <li>ArcGIS Server يمكنه نشر البيانات كخدمات</li>
+            </ul>
+
+            <div class="navigation">
+                <a href="19-spatial-indexes.html" class="nav-btn">المحاضرة السابقة</a>
+                <a href="../../index.html" class="nav-btn">العودة للصفحة الرئيسية</a>
+                <a href="21-qgis-integration.html" class="nav-btn">المحاضرة التالية: الربط مع QGIS</a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 دورة SQL Server 2008 - م. ياسر المفعلاني</p>
+        </div>
+    </footer>
+</body>
+</html>
+

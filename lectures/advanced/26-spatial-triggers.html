@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المحاضرة 26: Triggers المتقدمة للبيانات الجغرافية</title>
+    <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>المحاضرة 26: Triggers المتقدمة للبيانات الجغرافية</h1>
+            <p class="instructor">مقدم الدورة: م. ياسر المفعلاني</p>
+        </div>
+    </header>
+
+    <nav class="main-nav">
+        <div class="container">
+            <ul>
+                <li><a href="../../index.html">الصفحة الرئيسية</a></li>
+                <li><a href="#content">المحتوى</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="lecture-content" id="content">
+            <h2>Trigger للتحقق من صحة البيانات الجغرافية</h2>
+            <div class="code-block">
+<code><span class="keyword">CREATE TRIGGER</span> TR_ValidateGeography
+<span class="keyword">ON</span> المواقع
+<span class="keyword">AFTER INSERT</span>, <span class="keyword">UPDATE</span>
+<span class="keyword">AS</span>
+<span class="keyword">BEGIN</span>
+    <span class="keyword">IF EXISTS</span> (
+        <span class="keyword">SELECT</span> 1 <span class="keyword">FROM</span> INSERTED
+        <span class="keyword">WHERE</span> Shape.STIsValid() = 0
+    )
+    <span class="keyword">BEGIN</span>
+        <span class="keyword">RAISERROR</span>(<span class="string">'البيانات الجغرافية غير صحيحة'</span>, 16, 1);
+        <span class="keyword">ROLLBACK TRANSACTION</span>;
+    <span class="keyword">END</span>;
+<span class="keyword">END</span>;
+</code>
+            </div>
+
+            <h2>الخلاصة</h2>
+            <ul>
+                <li>استخدم Triggers للتحقق من صحة البيانات</li>
+                <li>تأكد من SRID الصحيح</li>
+            </ul>
+
+            <div class="navigation">
+                <a href="25-spatial-performance.html" class="nav-btn">المحاضرة السابقة</a>
+                <a href="../../index.html" class="nav-btn">العودة للصفحة الرئيسية</a>
+                <a href="27-spatial-views.html" class="nav-btn">المحاضرة التالية</a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 دورة SQL Server 2008 - م. ياسر المفعلاني</p>
+        </div>
+    </footer>
+</body>
+</html>
+

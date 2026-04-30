@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المحاضرة 18: دوال Spatial المتقدمة والشاملة</title>
+    <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>المحاضرة 18: دوال Spatial المتقدمة والشاملة</h1>
+            <p class="instructor">مقدم الدورة: م. ياسر المفعلاني</p>
+        </div>
+    </header>
+
+    <nav class="main-nav">
+        <div class="container">
+            <ul>
+                <li><a href="../../index.html">الصفحة الرئيسية</a></li>
+                <li><a href="#content">المحتوى</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="lecture-content" id="content">
+            <h2>دوال المسافة والقياس</h2>
+
+            <h3>STDistance - حساب المسافة</h3>
+            <div class="code-block">
+<code><span class="keyword">DECLARE</span> @point1 <span class="keyword">GEOGRAPHY</span> = <span class="function">geography::Point</span>(31.2357, 30.0444, 4326);
+<span class="keyword">DECLARE</span> @point2 <span class="keyword">GEOGRAPHY</span> = <span class="function">geography::Point</span>(32.2995, 30.5877, 4326);
+
+<span class="comment">-- المسافة بالمتر</span>
+<span class="keyword">SELECT</span> @point1.STDistance(@point2) <span class="keyword">AS</span> المسافة_بالمتر;
+
+<span class="comment">-- المسافة بالكيلومتر</span>
+<span class="keyword">SELECT</span> @point1.STDistance(@point2) / 1000 <span class="keyword">AS</span> المسافة_بالكيلومتر;
+</code>
+            </div>
+
+            <h3>STLength - حساب الطول</h3>
+            <div class="code-block">
+<code><span class="keyword">DECLARE</span> @line <span class="keyword">GEOGRAPHY</span> = <span class="function">geography::STLineFromText</span>(
+    <span class="string">'LINESTRING(31.2357 30.0444, 29.9158 31.2001, 32.2995 30.5877)'</span>, 
+    4326
+);
+
+<span class="keyword">SELECT</span> @line.STLength() / 1000 <span class="keyword">AS</span> الطول_بالكيلومتر;
+</code>
+            </div>
+
+            <h3>STArea - حساب المساحة</h3>
+            <div class="code-block">
+<code><span class="keyword">DECLARE</span> @polygon <span class="keyword">GEOGRAPHY</span> = <span class="function">geography::STPolyFromText</span>(
+    <span class="string">'POLYGON((31.2 30.0, 31.3 30.0, 31.3 30.1, 31.2 30.1, 31.2 30.0))'</span>, 
+    4326
+);
+
+<span class="keyword">SELECT</span> @polygon.STArea() / 1000000 <span class="keyword">AS</span> المساحة_بالكيلومتر_المربع;
+</code>
+            </div>
+
+            <h2>دوال العلاقات المكانية</h2>
+
+            <h3>STIntersects - التحقق من التقاطع</h3>
+            <div class="code-block">
+<code><span class="keyword">DECLARE</span> @point <span class="keyword">GEOGRAPHY</span> = <span class="function">geography::Point</span>(31.25, 30.05, 4326);
+<span class="keyword">DECLARE</span> @polygon <span class="keyword">GEOGRAPHY</span> = <span class="function">geography::STPolyFromText</span>(
+    <span class="string">'POLYGON((31.2 30.0, 31.3 30.0, 31.3 30.1, 31.2 30.1, 31.2 30.0))'</span>, 
+    4326
+);
+
+<span class="keyword">SELECT</span> @point.STIntersects(@polygon) <span class="keyword">AS</span> يتقاطع;
+<span class="comment">-- يعيد 1 إذا تقاطع، 0 إذا لم يتقاطع</span>
+</code>
+            </div>
+
+            <h3>STContains - التحقق من الاحتواء</h3>
+            <div class="code-block">
+<code><span class="keyword">SELECT</span> @polygon.STContains(@point) <span class="keyword">AS</span> يحتوي;
+<span class="comment">-- يعيد 1 إذا كان المضلع يحتوي على النقطة</span>
+</code>
+            </div>
+
+            <h3>STWithin - التحقق من التواجد داخل</h3>
+            <div class="code-block">
+<code><span class="keyword">SELECT</span> @point.STWithin(@polygon) <span class="keyword">AS</span> داخل;
+<span class="comment">-- يعيد 1 إذا كانت النقطة داخل المضلع</span>
+</code>
+            </div>
+
+            <h3>STTouches - التحقق من التلامس</h3>
+            <div class="code-block">
+<code><span class="keyword">DECLARE</span> @polygon1 <span class="keyword">GEOGRAPHY</span> = <span class="function">geography::STPolyFromText</span>(
+    <span class="string">'POLYGON((31.2 30.0, 31.3 30.0, 31.3 30.1, 31.2 30.1, 31.2 30.0))'</span>, 
+    4326
+);
+<span class="keyword">DECLARE</span> @polygon2 <span class="keyword">GEOGRAPHY</span> = <span class="function">geography::STPolyFromText</span>(
+    <span class="string">'POLYGON((31.3 30.0, 31.4 30.0, 31.4 30.1, 31.3 30.1, 31.3 30.0))'</span>, 
+    4326
+);
+
+<span class="keyword">SELECT</span> @polygon1.STTouches(@polygon2) <span class="keyword">AS</span> يتلامس;
+</code>
+            </div>
+
+            <h3>STOverlaps - التحقق من التداخل</h3>
+            <div class="code-block">
+<code><span class="keyword">SELECT</span> @polygon1.STOverlaps(@polygon2) <span class="keyword">AS</span> يتداخل;
+</code>
+            </div>
+
+            <h2>دوال التحويل والإنشاء</h2>
+
+            <h3>STBuffer - إنشاء منطقة عازلة</h3>
+            <div class="code-block">
+<code><span class="keyword">DECLARE</span> @point <span class="keyword">GEOGRAPHY</span> = <span class="function">geography::Point</span>(31.2357, 30.0444, 4326);
+<span class="keyword">DECLARE</span> @buffer <span class="keyword">GEOGRAPHY</span> = @point.STBuffer(5000);
+<span class="comment">-- منطقة عازلة بمسافة 5 كيلومتر (5000 متر)</span>
+
+<span class="keyword">SELECT</span> @buffer.STArea() / 1000000 <span class="keyword">AS</span> مساحة_المنطقة_العازلة;
+</code>
+            </div>
+
+            <h3>STUnion - دمج كائنين</h3>
+            <div class="code-block">
+<code><span class="keyword">DECLARE</span> @union <span class="keyword">GEOGRAPHY</span> = @polygon1.STUnion(@polygon2);
+<span class="keyword">SELECT</span> @union.STArea() <span class="keyword">AS</span> المساحة_المجمعة;
+</code>
+            </div>
+
+            <h3>STIntersection - التقاطع</h3>
+            <div class="code-block">
+<code><span class="keyword">DECLARE</span> @intersection <span class="keyword">GEOGRAPHY</span> = @polygon1.STIntersection(@polygon2);
+<span class="keyword">SELECT</span> @intersection.STArea() <span class="keyword">AS</span> مساحة_التقاطع;
+</code>
+            </div>
+
+            <h3>STDifference - الفرق</h3>
+            <div class="code-block">
+<code><span class="keyword">DECLARE</span> @difference <span class="keyword">GEOGRAPHY</span> = @polygon1.STDifference(@polygon2);
+<span class="keyword">SELECT</span> @difference.STArea() <span class="keyword">AS</span> مساحة_الفرق;
+</code>
+            </div>
+
+            <h2>دوال المعلومات</h2>
+
+            <h3>STGeometryType - نوع الكائن</h3>
+            <div class="code-block">
+<code><span class="keyword">SELECT</span> 
+    Shape.STGeometryType() <span class="keyword">AS</span> نوع_الكائن,
+    <span class="function">COUNT</span>(*) <span class="keyword">AS</span> العدد
+<span class="keyword">FROM</span> المواقع
+<span class="keyword">GROUP BY</span> Shape.STGeometryType();
+</code>
+            </div>
+
+            <h3>STNumPoints - عدد النقاط</h3>
+            <div class="code-block">
+<code><span class="keyword">SELECT</span> @line.STNumPoints() <span class="keyword">AS</span> عدد_النقاط;
+</code>
+            </div>
+
+            <h3>STPointN - الحصول على نقطة محددة</h3>
+            <div class="code-block">
+<code><span class="keyword">SELECT</span> @line.STPointN(1) <span class="keyword">AS</span> النقطة_الأولى;
+</code>
+            </div>
+
+            <h2>مثال شامل - البحث عن المواقع القريبة</h2>
+            <div class="code-block">
+<code><span class="keyword">DECLARE</span> @myLocation <span class="keyword">GEOGRAPHY</span> = <span class="function">geography::Point</span>(31.2357, 30.0444, 4326);
+<span class="keyword">DECLARE</span> @searchRadius <span class="keyword">FLOAT</span> = 10000; <span class="comment">-- 10 كيلومتر</span>
+
+<span class="keyword">SELECT</span> 
+    اسم_الموقع,
+    الموقع.STDistance(@myLocation) / 1000 <span class="keyword">AS</span> المسافة_بالكيلومتر,
+    الموقع.STBuffer(@searchRadius).STArea() / 1000000 <span class="keyword">AS</span> مساحة_المنطقة_العازلة
+<span class="keyword">FROM</span> المواقع
+<span class="keyword">WHERE</span> الموقع.STDistance(@myLocation) <= @searchRadius
+    <span class="keyword">AND</span> الموقع.STIntersects(@myLocation.STBuffer(@searchRadius)) = 1
+<span class="keyword">ORDER BY</span> الموقع.STDistance(@myLocation);
+</code>
+            </div>
+
+            <h2>الخلاصة</h2>
+            <ul>
+                <li>STDistance: حساب المسافة</li>
+                <li>STLength: حساب الطول</li>
+                <li>STArea: حساب المساحة</li>
+                <li>STIntersects, STContains, STWithin: علاقات مكانية</li>
+                <li>STBuffer: إنشاء منطقة عازلة</li>
+                <li>STUnion, STIntersection, STDifference: عمليات هندسية</li>
+            </ul>
+
+            <div class="navigation">
+                <a href="17-geography.html" class="nav-btn">المحاضرة السابقة</a>
+                <a href="../../index.html" class="nav-btn">العودة للصفحة الرئيسية</a>
+                <a href="19-spatial-indexes.html" class="nav-btn">المحاضرة التالية: الفهارس المكانية</a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 دورة SQL Server 2008 - م. ياسر المفعلاني</p>
+        </div>
+    </footer>
+</body>
+</html>
